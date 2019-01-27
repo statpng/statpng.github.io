@@ -8,25 +8,28 @@
             <div class="col-lg-8">
                 <!-- Blog Post -->
                 	<div class="post-list" style="list-style-type: none;">
-						{% for post in paginator.posts %} 	
+						{% for post in paginator.posts %}
 							<h2>
-								<img class="title-image" src="{{ "/img/dna.png" | prepend: site.baseurl }}"/>
+								<!-- <img class="title-image" src="{{ "/img/dna.png" | prepend: site.baseurl }}"/> -->
 								<a class="post-link" href="{{ post.url | prepend: site.baseurl }}">{{ post.title }}</a>
 							</h2>
 							<div class="author" style="margin-top: -10px;">Posted by
-								<i class="fa fa-user"></i><a href="http://www.airrayagroup.com/"> {{ post.author}}</a>
+								<i class="fa fa-user"></i><a href="https://github.com/statpng"> {{ post.author}}</a>
 								<span class="post-meta"><i class="fa fa-calendar"></i> {{ post.date | date: "%b %-d, %Y" }}</span>
 							</div>
+              <br>
 							<div class="excerpt">{{ post.excerpt }}</div>
 							<div class="readmore" style="float: left;">
 								{% if post.content | post_contains_excerpt_tag %}
 									<a href="{{ post.url | prepend: site.baseurl }}">Read more</a>
 								{% endif %}
-							</div>								
+							</div>
+              <br>
+              <br>
 					</div>
 					<hr>
-						<div class="post-list" style="list-style-type: none;">			
-							{% endfor %} 
+						<div class="post-list" style="list-style-type: none;">
+							{% endfor %}
 						</div>
 					<!-- Pagination links -->
 				<span class='st_sharethis' displayText='ShareThis'></span>
@@ -41,9 +44,9 @@
 						{% if paginator.previous_page %}
 
 						  {% if paginator.previous_page == 1 %}
-							<li><a href="/sciblog/">Previous</a></li>
+							<li><a href="{{ site.baseurl }}/">Previous</a></li>
 						  {% else %}
-							<li><a href="/sciblog/page{{ paginator.previous_page }}">Previous</a></li>
+							<li><a href="{{ site.baseurl }}/page{{ paginator.previous_page }}">Previous</a></li>
 						  {% endif %}
 
 						{% else %}
@@ -53,7 +56,7 @@
 						{% if paginator.page == 1 %}
 						  <li><span class="active">1</span></li>
 						{% else %}
-						  <li><a href="/sciblog/">1</a></li>
+						  <li><a href="{{ site.baseurl }}/">1</a></li>
 						{% endif %}
 
 						{% for count in (2..paginator.total_pages) %}
@@ -61,12 +64,12 @@
 						  {% if count == paginator.page %}
 							<li><span class="active">{{ count }}</span></li>
 						  {% else %}
-							<li><a href="/sciblog/page{{ count }}">{{ count }}</a></li>
+							<li><a href="{{ site.baseurl }}/page{{ count }}">{{ count }}</a></li>
 						  {% endif %}
 						{% endfor %}
 
 						{% if paginator.next_page %}
-						  <li><a href="/sciblog/page{{ paginator.next_page }}">Next</a></li>
+						  <li><a href="{{ site.baseurl }}/page{{ paginator.next_page }}">Next</a></li>
 						{% else %}
 						  <li><span class="disabled">Next</span></li>
 						{% endif %}
@@ -116,14 +119,14 @@
                 <!-- Recents post -->
                 <div class="well">
                 	<h4>Recent posts</h4>
-                		<ul class="posts" span="recent">  
-							{% for post in site.posts limit:5 %}  
-							   <li>  
+                		<ul class="posts" span="recent">
+							{% for post in site.posts limit:5 %}
+							   <li>
 								   <span>{{ post.date | date_to_string }}</span>
-								   <a href="{{ BASE_PATH }}{{ post.url }}">  
-								   {{ post.title }}</a>  
-							   </li>  
-							{% endfor %}  
+								   <a href="{{ BASE_PATH }}{{ post.url }}">
+								   {{ post.title }}</a>
+							   </li>
+							{% endfor %}
 						</ul>
                 </div>
                 <!-- tags widget -->
@@ -142,19 +145,21 @@
                 </div>
                 <!-- author widget -->
                 <div class="well">
-                    <h4>This blog is maintained by <a href="http://www.airrayagroup.com/">AIRRAYA</a></h4>
-                    <p>Get in touch with us at airrayagroup@gmail.com</p>
+                    <h4>This blog is maintained by <a href="http://github.com/statpng">Kipoong Kim</a></h4>
+                    <p>Get in touch with us at kkp7700@gmail.com</p>
 					<ul class="list-inline">
                             <li>
-								<a href="https://www.facebook.com/airrayagroup/">
+								<a href="https://www.instagram.com/purepng/">
 									<span class="fa-stack fa-2x">
 									  <i class="fa fa-circle fa-stack-2x"></i>
-									  <i class="fa fa-facebook fa-stack-1x fa-inverse"></i>
+									  <!-- <i class="fa fa-facebook fa-stack-1x fa-inverse"></i> -->
+                    <!-- <i class="fa fa-instagram" aria-hidden="true"></i> -->
+                    <i class="fa fa-instagram fa-stack-1x fa-inverse"></i>
 									</span>
 								</a>
                             </li>
                             <li>
-								<a href="http://webdesign.airrayagroup.com">
+								<a href="https://www.researchgate.net/profile/Kipoong_Kim">
 									<span class="fa-stack fa-2x">
 									  <i class="fa fa-circle fa-stack-2x"></i>
 									  <i class="fa fa-globe fa-stack-1x fa-inverse"></i>
@@ -162,7 +167,7 @@
 								</a>
                             </li>
                             <li>
-								<a href="mailto:airrayagroup@gmail.com">
+								<a href="mailto:kkp7700@gmail.com">
 									<span class="fa-stack fa-2x">
 									  <i class="fa fa-circle fa-stack-2x"></i>
 									  <i class="fa fa-envelope fa-stack-1x fa-inverse"></i>
@@ -170,10 +175,10 @@
 								</a>
                             </li>
                             <li>
-								<a href="https://bitbucket.org/airrayagroup/">
+								<a href="https://github.com/statpng/">
 									<span class="fa-stack fa-2x">
 									  <i class="fa fa-circle fa-stack-2x"></i>
-									  <i class="fa fa-bitbucket fa-stack-1x fa-inverse"></i>
+									  <i class="fa fa-github fa-stack-1x fa-inverse"></i>
 									</span>
 								</a>
                             </li>

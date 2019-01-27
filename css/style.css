@@ -3,7 +3,7 @@
  * noise background from (http://www.noisetexturegenerator.com/)
  */
 
-body { 
+body {
     background-image: url('../img/body.png');
  }
 .readmore {
@@ -83,10 +83,14 @@ a:focus, a:hover {
 }
 img {
     vertical-align: middle;
-    float: left;
     padding-right: 10px;
     padding-bottom: 5px;
+	width: 50%;
+	height: 50%;
+	display: block;
 }
+
+
 .title-image {
     width: 50px;
 }
@@ -146,3 +150,116 @@ background:#fff; clear:left; font:14px Helvetica,Arial,sans-serif;
 ul.posts {
 list-style-image: url('../img/code.png');"
 }
+
+
+
+
+.tags a{font-size:1.875rem;color:#2B7AD4;display:inline-block;border:1px solid #2B7AD4;border-radius:.313rem;padding:.25rem .625rem;margin-right:.125rem;margin-bottom:.5rem;text-decoration:none;}
+
+
+.tags{margin-top:1.875rem;}
+.tags a:hover{color:#00395b;border:1px solid #00395b;background:#fff}
+.tags a{color:#005f97;padding:.313rem .625rem;border-radius:3px;display:inline-block;margin:0 0 .313rem;z-index:50}
+
+.tag-title:before{
+  display:block;
+  content:" ";
+  margin-top:-60px;
+  height:75px;
+  visibility:hidden}
+
+.tag-title{
+  font-family:'Open Sans',sans-serif;
+  font-weight:300;
+  font-style:normal;
+  font-size:4.25rem;
+  margin-top:3.75rem;
+  *zoom:1;
+  width:auto;
+  max-width:80rem;
+  float:none;
+  display:block;
+  margin-right:auto;
+  margin-left:auto;
+  padding-left:0;
+  padding-right:0;}
+
+.tag-title:before,
+.tag-title:after{content:'';display:table}
+.tag-title:after{clear:both}@media only screen and (max-width:37.5rem){
+  .tag-title{font-size:1.75rem;margin-top:1.25rem;padding:0 1.25rem}}
+
+        .post-list{list-style:none;margin:1.563rem auto;}@media only screen and (max-width:37.5rem){
+          .post-list{padding:0 1.25rem}}
+
+        .post-list a{
+
+          /* border-bottom:1px solid #dadada; */
+          padding:.625rem 0;
+          text-decoration:none;
+          transition:all .5s;}
+
+        .post-list
+        .entry-date{float:right;}@media only screen and (max-width:37.5rem){
+          .post-list .entry-date{display:none}}
+
+  .post-content{padding:2.5rem 0}
+  .post-content img{max-width:100%;margin:1.0rem auto;display:block}
+  .post-content p,
+  .post-content h1,
+  .post-content h2,
+  .post-content h3,
+  .post-content h4,
+  .post-content ul,
+  .post-content ol,
+  .post-content .tags,
+  .post-content iframe,
+  .post-content
+
+  .button-post{
+    *zoom:1;
+    width:auto;
+    max-width:80rem;
+    float:none;
+    display:block;
+    margin-right:auto;
+    margin-left:auto;padding-left:0;padding-right:0;
+    padding:0 1.25rem;
+    margin:0 auto 1.875rem;font-family:'Open Sans',sans-serif;
+    font-weight:300;font-style:normal;
+    font-size:1.125rem;line-height:2;letter-spacing:.01rem;}
+
+
+
+
+
+
+
+
+
+
+
+
+  .post-content p:before,.post-content h1:before,.post-content h2:before,.post-content h3:before,.post-content h4:before,.post-content ul:before,
+  .post-content ol:before,.post-content
+  .tags:before,
+  .post-content iframe:before,
+  .post-content
+  .button-post:before,
+  .post-content p:after,.post-content h1:after,.post-content h2:after,.post-content h3:after,.post-content h4:after,.post-content ul:after,.post-content ol:after,.post-content
+  .tags:after,
+  .post-content iframe:after,.post-content
+
+  .button-post:after{content:'';display:table}
+  .post-content p:after,.post-content h1:after,.post-content h2:after,.post-content h3:after,.post-content h4:after,.post-content ul:after,.post-content ol:after,.post-content
+  .tags:after,
+  .post-content iframe:after,
+  .post-content
+  .button-post:after{clear:both}@media only screen and (min-width:37.5rem){
+    .post-content p,.post-content h1,.post-content h2,.post-content h3,.post-content h4,.post-content ul,.post-content ol,.post-content.tags,.post-content iframe,.post-content
+    .button-post{font-size:2.25rem}}
+
+  .subheader a{border:2px solid #fff;border-radius:20px;padding:0 10px;}@media only screen and (min-width:37.5rem)
+  {.header-post .subheader a{padding:0 10px}}
+  .header-post
+  .date{font-family:'Open Sans',sans-serif;font-weight:300;font-style:normal;font-size:1rem}

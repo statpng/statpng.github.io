@@ -6,12 +6,26 @@
 # 'jekyll serve'. If you change this file, please restart the server process.
 
 # Site settings
-title: Sciblog
-email: airrayagroup@gmail.com
-description: > # this means to ignore newlines until "baseurl:"
-baseurl: "/sciblog" # the subpath of your site, e.g. /blog
-url: "" # the base hostname & protocol for your site
-author: AIRRAYA
+title: A blog by statpng
+email: kkp7700@gmail.com
+description: Statistical softwares or literature reviews for statistical genetics # this means to ignore newlines until "baseurl:"
+baseurl: "" # the subpath of your site, e.g. /blog
+url: "https://statpng.github.io/" # the base hostname & protocol for your site
+author: Kipoong Kim
+
+links:
+  - title: Home
+    url: /
+  - title: About
+    url: /About
+  - title: Tags
+    url: /tags
+  - title: Portfolio
+    url: /Portfolio
+  - title: FAQ
+    url: /FAQ
+
+plugins: [jekyll-paginate]
 
 # Gems
 gems: [jekyll-paginate]
