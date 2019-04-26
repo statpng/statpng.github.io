@@ -1,6 +1,6 @@
 # 따라하며 배우는 C++
 
-
+<https://www.youtube.com/channel/UCg6IlhycdYiK_nWB3spjIqA/playlists>
 
 ## 프로그래밍 과정
 
