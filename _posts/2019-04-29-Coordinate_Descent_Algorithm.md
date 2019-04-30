@@ -22,11 +22,11 @@ author: Kipoong Kim
 
 - We can consider the linear regression framework as:
 $$
-  y_i=x_i\beta + \epsilon_i
+y_i=x_i\beta + \epsilon_i
 $$
   The least squares solve the problem
 $$
-  \parallel y-X\beta \parallel _2^2,
+\parallel y-X\beta \parallel _2^2,
 $$
   where $\parallel \cdot \parallel_2$ represents the $\ell _2$ norm. 
 
@@ -36,7 +36,7 @@ $$
   ​	In linear regression,
 $$
 \begin{align*}
-	L 	& = \frac{1}{2} \parallel y-X\beta \parallel _2 ^2 \\
+L 	& = \frac{1}{2} \parallel y-X\beta \parallel _2 ^2 \\
     	& = \frac{1}{2} \sum_i ( y_i - \sum_j x_{ij} \beta_j )^2 \\
   
   \frac{\partial L}{\partial \beta_k} & = \sum_i x_{ik} (y_i - \sum_j x_{ij} \beta_j ) \\
@@ -50,7 +50,9 @@ $$
 ### (2) Implementation in C++
 
 - 
+
   ```c++
+  
   #include <iostream>
   #include <armadillo>
   
@@ -102,6 +104,7 @@ $$
   //    1.6550
   //    3.0154
   //    4.5035
+  
   ```
 
 - Notification
@@ -110,8 +113,8 @@ $$
 
 ### (3) References
 
-- [Coursera]: https://www.coursera.org/lecture/ml-regression/coordinate-descent-for-least-squares-regression-normalized-features-wkbZU
+- [Coursera](https://www.coursera.org/lecture/ml-regression/coordinate-descent-for-least-squares-regression-normalized-features-wkbZU)
 
-- [Ryan Tibshirani]: https://www.cs.cmu.edu/~ggordon/10725-F12/slides/25-coord-desc.pdf
+- [Ryan Tibshirani](https://www.cs.cmu.edu/~ggordon/10725-F12/slides/25-coord-desc.pdf)
 
-- [Linear algebra with C++]: https://www.asc.ohio-state.edu/physics/ntg/6810/readings/hjorth-jensen_notes2012_06.pdf
+- [Linear algebra with C++](https://www.asc.ohio-state.edu/physics/ntg/6810/readings/hjorth-jensen_notes2012_06.pdf)
