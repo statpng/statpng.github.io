@@ -23,18 +23,18 @@ author: Kipoong Kim
 - We can consider the linear regression framework as:
 $$
   y_i=x_i\beta + \epsilon_i
-  $$
+$$
   The least squares solve the problem
-  $$
+$$
   \parallel y-X\beta \parallel _2^2,
-  $$
+$$
   where $\parallel \cdot \parallel_2$ represents the $\ell _2$ norm. 
-  
+
   ​	However, in several cases, we cannot get an explicit solution. To solve this problem, coordinate descent algorithm(CCD) optimize the obejective function by variable assuming that others are fixed. 
   ​	For example, there are five variables associated with a continuous response variable. Firstly, we set an initial value to estimate regression coefficients and CCD find a estimates for the first predictor regardless of others. And it estimates the second regression coefficient with the updated initial value, so on.
-  
+
   ​	In linear regression,
-  $$
+$$
   \begin{align}
   L & = \frac{1}{2} \parallel y-X\beta \parallel _2 ^2 \\
     & = \frac{1}{2} \sum_i ( y_i - \sum_j x_{ij} \beta_j )^2 \\
@@ -45,8 +45,8 @@ $$
   \therefore \hat{\beta_k} & = (x_k^T x_k)^{-1}x_k^T (y-X_{(-k)}\beta_{(-k)} ) . \\
   
   \end{align}
-  $$
-  
+$$
+
 
 ### (2) Implementation in C++
 
@@ -108,3 +108,11 @@ $$
 - Notification
 
   * Armadillo library can be easily installed in UNIX operating system, but windows have challanges.
+
+### (3) References
+
+- [Coursera]: https://www.coursera.org/lecture/ml-regression/coordinate-descent-for-least-squares-regression-normalized-features-wkbZU
+
+- [Ryan Tibshirani]: https://www.cs.cmu.edu/~ggordon/10725-F12/slides/25-coord-desc.pdf
+
+- [Linear algebra with C++]: https://www.asc.ohio-state.edu/physics/ntg/6810/readings/hjorth-jensen_notes2012_06.pdf
