@@ -35,16 +35,15 @@ $$
 
   ​	In linear regression,
 $$
-  \begin{align}
-  L & = \frac{1}{2} \parallel y-X\beta \parallel _2 ^2 \\
-    & = \frac{1}{2} \sum_i ( y_i - \sum_j x_{ij} \beta_j )^2 \\
+\begin{align}
+	L 	& = \frac{1}{2} \parallel y-X\beta \parallel _2 ^2 \\
+    	& = \frac{1}{2} \sum_i ( y_i - \sum_j x_{ij} \beta_j )^2 \\
   
   \frac{\partial L}{\partial \beta_k} & = \sum_i x_{ik} (y_i - \sum_j x_{ij} \beta_j ) \\
-  & = \sum_i x_{ik} (y_i - \sum_{j\ne k} x_{ij} \beta_j - x_{ik} \beta_k ) \\
-  & = x_k^T (y-X_{(-k)}\beta_{(-k)} ) - x_k^T x_k \beta_k \\
+  	& = \sum_i x_{ik} (y_i - \sum_{j\ne k} x_{ij} \beta_j - x_{ik} \beta_k ) \\
+  	& = x_k^T (y-X_{(-k)}\beta_{(-k)} ) - x_k^T x_k \beta_k \\
   \therefore \hat{\beta_k} & = (x_k^T x_k)^{-1}x_k^T (y-X_{(-k)}\beta_{(-k)} ) . \\
-  
-  \end{align}
+\end{align}
 $$
 
 

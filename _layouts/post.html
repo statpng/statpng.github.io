@@ -13,9 +13,9 @@
 					<h1 class="post-title" itemprop="name headline">{{ page.title }}</h1>
 
 					<p class="post-meta">{% if page.author %} <span itemprop="author" itemscope itemtype="http://schema.org/Person"><span itemprop="name">by {{ page.author }}</span></span>{% endif %} <time datetime="{{ page.date | date_to_xmlschema }}" itemprop="datePublished"><i class="fa fa-calendar"></i> {{ page.date | date: "%b %-d, %Y" }}</time></p>
-
+	
 					</div>
-
+	
 					 {{ content }}
 					 <span class='st_sharethis_large' displayText='ShareThis'></span>
 						<span class='st_facebook_large' displayText='Facebook'></span>
@@ -23,21 +23,26 @@
 						<span class='st_linkedin_large' displayText='LinkedIn'></span>
 						<span class='st_pinterest_large' displayText='Pinterest'></span>
 						<span class='st_email_large' displayText='Email'></span>
-                </div>
-                Category {{ page.categories | join: ', ' }}
-        </div>
+	            </div>
+	            Category {{ page.categories | join: ', ' }}
+	    </div>
 	</div>
 
 <!-- <script type="text/javascript" async
   src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
 </script> -->
 
-<script type="text/javascript" async
+```tex
+<script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS_HTML"></script>
+```
+
+<!-- <script type="text/javascript" async
   src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-MML-AM_CHTML">
-</script>
+</script> -->
 
   {% include comment.html %}
 </div>
+
 <hr>
  {% include footer.html %}
 </div>
