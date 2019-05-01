@@ -10,9 +10,9 @@ tags: C++
 author: Kipoong Kim
 ---
 
-## 동빈나 실전 알고리즘 강좌
-
 <!-- more -->
+
+## 동빈나 실전 알고리즘 강좌
 
 <https://www.youtube.com/channel/UChflhu32f5EUHlY7_SetNWw/featured>
 

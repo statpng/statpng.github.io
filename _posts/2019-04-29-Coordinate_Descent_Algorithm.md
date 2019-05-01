@@ -5,12 +5,14 @@ date:   2019-04-30
 categories: C++
 permalink: C++_algorithm
 tags: C++
+use_math: true
 
 # author
 author: Kipoong Kim
 ---
 
 <!-- more -->
+
 
 # Coordinate descent algorithm
 
@@ -21,29 +23,30 @@ author: Kipoong Kim
 ### (1) Linear regression
 
 - We can consider the linear regression framework as:
-$$
-y_i=x_i\beta + \epsilon_i
-$$
+
+  $$ y_i=x_i\beta + \epsilon_i $$
+
   The least squares solve the problem
-$$
-\parallel y-X\beta \parallel _2^2,
-$$
+
+  $$ \parallel y-X\beta \parallel _2^2, $$
+
   where $\parallel \cdot \parallel_2$ represents the $\ell _2$ norm. 
 
-  ​	However, in several cases, we cannot get an explicit solution. To solve this problem, coordinate descent algorithm(CCD) optimize the obejective function by variable assuming that others are fixed. 
+  ​	However, in several cases, we cannot get an explicit solution. To solve this problem, coordinate descent algorithm(CCD) optimize the obejective function for each variable assuming that others are fixed. 
   ​	For example, there are five variables associated with a continuous response variable. Firstly, we set an initial value to estimate regression coefficients and CCD find a estimates for the first predictor regardless of others. And it estimates the second regression coefficient with the updated initial value, so on.
 
   ​	In linear regression,
+
 $$
-\begin{align*}
+\begin{align} 
 L 	& = \frac{1}{2} \parallel y-X\beta \parallel _2 ^2 \\
     	& = \frac{1}{2} \sum_i ( y_i - \sum_j x_{ij} \beta_j )^2 \\
   
   \frac{\partial L}{\partial \beta_k} & = \sum_i x_{ik} (y_i - \sum_j x_{ij} \beta_j ) \\
   	& = \sum_i x_{ik} (y_i - \sum_{j\ne k} x_{ij} \beta_j - x_{ik} \beta_k ) \\
-  	& = x_k^T (y-X_{(-k)}\beta_{(-k)} ) - x_k^T x_k \beta_k \\
-  \therefore \hat{\beta_k} & = (x_k^T x_k)^{-1}x_k^T (y-X_{(-k)}\beta_{(-k)} ) . \\
-\end{align*}
+  	& = x_k^T (y-X_{(-k)}\beta_{(-k)} ) - x_k^T x_k \beta_k \\ \\
+  \therefore \hat{\beta_k} & = (x_k^T x_k)^{-1}x_k^T (y-X_{(-k)}\beta_{(-k)} )  
+  \end{align} 
 $$
 
 
