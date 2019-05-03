@@ -123,7 +123,7 @@ int main(){
 
    	*  [Coursera](https://www.coursera.org/lecture/ml-regression/coordinate-descent-for-least-squares-regression-normalized-features-wkbZU)
       	*  [Ryan Tibshirani](https://www.cs.cmu.edu/~ggordon/10725-F12/slides/25-coord-desc.pdf)
-         	*  [Linear algebra with C++](https://www.asc.ohio-state.edu/physics/ntg/6810/readings/hjorth-jensen_notes2012_06.pdf)
+              	*  [Linear algebra with C++](https://www.asc.ohio-state.edu/physics/ntg/6810/readings/hjorth-jensen_notes2012_06.pdf)
 
 
 
@@ -165,7 +165,81 @@ L 	& = \frac{1}{2} \parallel y-X\beta \parallel _2 ^2 + \lambda \parallel \beta 
   \end{align}
 $$
 
-### 
+- Implemetation in C++
+
+  ```c++
+  
+  #include <iostream>
+  #include <RcppArmadillo.h>
+  
+  using namespace arma;
+  using namespace std;
+  using namespace Rcpp;
+  
+  // [[Rcpp::depends(RcppArmadillo)]]
+  
+  
+  double soft_thresholding(double value){
+    double out;
+    if( value >= 0 ){
+      out = value;
+    } else {
+      out = 0.0;
+    }
+    
+    return out;
+  }
+  
+  // [[Rcpp::export]]
+  
+  arma::mat thelasso(mat X, mat y, int niter, double lambda){
+    
+    int p = X.n_cols;
+    int N = y.n_rows;
+    mat betak;
+    
+    mat beta(X.n_cols, 1);
+    
+    mat Diag_lambda (p, p);
+    Diag_lambda.fill(0);
+    for( int j=0; j<p; j++ ){
+      Diag_lambda(j,j) = 0.1;
+    }
+      
+    beta = solve((X.t()*X + Diag_lambda), X.t() * y );
+    for( int i=0; i<niter; i++ ){
+  
+      for( int k=0; k<(int)X.n_cols; k++ ){
+        
+        mat Xmk;
+        mat betamk;
+        
+        Xmk = X;
+        betamk = beta;
+        mat Xk = X.col(k);
+        
+        Xmk.col(k).fill(0);
+        betamk.row(k) = 0;
+        
+        double betak_hat = arma::as_scalar( Xk.t() * (y - Xmk * betamk ) );
+        // cout << betak_hat << endl;
+        
+        if( betak_hat > 0 ){
+          betak = soft_thresholding(abs(betak_hat) - N*lambda) / arma::as_scalar(Xk.t() * Xk);
+        } else {
+          betak = -soft_thresholding(abs(betak_hat) - N*lambda) / arma::as_scalar(Xk.t() * Xk);
+        }   
+        beta.row(k) = betak;
+      }
+    }
+    return beta; 
+  }
+  
+  ```
+
+  
+
+  
 
 
 
@@ -181,10 +255,10 @@ $$
   \begin{align}
   L & = \frac{1}{2} \parallel y-X\beta \parallel_2^2 + \frac{\lambda}{2} \parallel \beta \parallel_2^2 \\
    & = \frac{1}{2} \sum_{i=1}^{n} \left( y_i - \sum_{j=1}^p x_{ij} \beta_j \right)^2 + \frac{\lambda}{2} \sum_{j=1}^p \beta_j^2 \\
-   
+  
    \frac{ \partial L }{\partial \beta_k} & = - \sum_{i=1}^n x_{ik} \left( y_i - \sum_{j\ne k}x_{ij} \beta_j - x_{ik}\beta_k \right) + \lambda \beta_k \\
    & = - x_k^T(y-X_{(-k)}\beta_{(-k)} ) + x_k^Tx_k \beta_k + \lambda \beta_k \\
-   
+  
    \therefore \hat{\beta_k} & = (x_k^T x_k + \lambda )^{-1}x_k^T (y-X_{(-k)}\beta_{(-k)}).
 
   \end{align}
@@ -197,24 +271,23 @@ $$
 ## 4. Elastic-net
 
 - ### Derivation
-
-  $$
+$$
   \begin{align}
-  
+
   L & = \frac{1}{2} \parallel y-X\beta \parallel_2^2 + \lambda \left( \frac{1-\alpha}{2} \parallel \beta \parallel_2^2 + \alpha \parallel \beta \parallel _1 \right) \\
-  
+
   & = \frac{1}{2} \sum_{i=1}^n \left( y_i - \sum_{j=1}^px_ij\beta_j \right)^2 + \lambda \left( \frac{1-\alpha}{2} \sum_{j=1}^p \beta_j^2 + \alpha \sum_{j=1}^p | \beta_j | \right) \\
-  
+
   \frac{\partial L}{\partial \beta_k}  & = - \sum_{i=1}^n x_{ik} \left( y_i - \sum_{j\ne k}^p x_ij \beta_j - x_{ik} \beta_k \right) + \lambda \left( (1-\alpha)\beta_k + \alpha  sgn(\beta_k) \right) \\
-  
+
     & = - x_k^T (y - X_{(-k)} \beta_{(-k)}) + x_k^T x_k \beta_k + \lambda \left( (1-\alpha)\beta_k + \alpha sgn(\beta_k) \right) \\ \\
     
     \therefore \hat{\beta_k} & = \frac{ \left( | x_k^T(y-X_{(-k)}\beta_{(-k)}) | - \alpha  \right )_+ sgn(\beta_k) }{x_k^T x_k + \lambda(1-\alpha) }
-  
-  
-  \end{align}
-  $$
 
+  
+
+  \end{align}
+$$
   
 
 
@@ -224,26 +297,26 @@ $$
 ## 5. Block coordinate descent (multi-response elastic-net)
 
 - ### Derivation
-
-  $$
+$$
   \begin{align}
-  
+
   L & = \frac{1}{2} \parallel Y-XB \parallel_2^2 + \lambda \left( \frac{1-\alpha}{2} \parallel B \parallel_F^2 + \alpha \sum_{j=1}^p \parallel B_{j\cdot} \parallel_2 \right) \\
-  
+
   & = \frac{1}{2} \sum_{i=1}^n \parallel y_{i\cdot} - \sum_{j=1}^p x_{ij} B_{j\cdot} \parallel_2^2 + \lambda \left( \frac{1-\alpha}{2} \sum_{j=1}^p \parallel B_{j\cdot} \parallel_2^2 + \alpha \sum_{j=1}^p \parallel B_{j\cdot} \parallel_2 \right) \\
-  
-  
+
+
   \frac{\partial L}{\partial B_{k\cdot}}  & = - \sum_{i=1}^n x_{ik} ( y_{i\cdot} - \sum_{j\ne k}^p x_{ij} B_{j\cdot} - x_{ik} B_{k\cdot} ) + \lambda \left( (1-\alpha)B_{k\cdot} + \alpha \frac{B_{k\cdot}}{\parallel B_{k\cdot} \parallel_2} sgn(B_{k\cdot}) \right) \\
+
+    & = - x_k^T ( Y - \sum_{j\ne k}^p x_{\cdot j} B_{j\cdot} )  + x_k^T x_k B_{k\cdot} + \lambda (1-\alpha) B_{k\cdot} + \lambda \alpha \frac{B_{k\cdot}}{\parallel B_{k\cdot} \parallel_2} sgn(B_{k\cdot} ) \\\\
+
   
-    & = - x_k^T ( Y - \sum_{j\ne k}^p x_{\cdot j} B_{j\cdot} )  + x_k^T x_k B_{k\cdot} + \lambda (1-\alpha) B_{k\cdot} + \lambda \alpha \frac{B_{k\cdot}}{\parallel B_{k\cdot} \parallel_2} sgn(B_{k\cdot}) ) \\\\
-  
-  
+
   \text{Since }B_{k\cdot} & =  (x_k^T x_k)^{-1} x_k^T ( Y - X_{(-k)} B_{(-k)} ), \\\\
-  
+
   \frac{\partial L}{\partial B_{k\cdot}} & = - x_k^T ( Y - \sum_{j\ne k}^p x_{\cdot j} B_{j\cdot} )  + x_k^T x_k B_{k\cdot} + \lambda (1-\alpha) B_{k\cdot} + \lambda \alpha \frac{x_k^T (Y-X_{(-k)}B_{(-k)})} {\parallel x_k^T( Y-X_{(-k)}B_{(-k)} ) \parallel_2} sgn(B_{k\cdot}) ) \\
-  
-    \therefore \hat{B}_{k\cdot} & = \frac{1}{x_k^T x_k + \lambda(1-\alpha) }  { \left( 1 - \frac{ \lambda \alpha} {\parallel x_k^T (Y-X_{(-k)}B_{(-k)}) \parallel_2 }  \right )_+ x_k^T (Y-X_{(-k)} B_{(-k)}) }
-  
+
+    \therefore \hat{B}_{k\cdot} & = \frac{1}{x_k^T x_k + \lambda(1-\alpha) }  { \left( 1 - \frac{ \lambda \alpha} {\parallel x_k^T (Y-X_{(-k)}B_{(-k)}) \parallel_2 }  \right) _+ x_k^T (Y-X_{(-k)} B_{(-k)}) }
+
   \end{align}
   $$
 
@@ -252,4 +325,3 @@ $$
   - I cannot understand why $ B_{k\cdot} $ is replaced by the partial residual term.
 
 
-  
