@@ -48,6 +48,7 @@ author: Kipoong Kim
     ​	A derivation of estimate in linear regression is as follows.
 
 $$
+
 \begin{align} 
 L 	& = \frac{1}{2} \parallel y-X\beta \parallel _2 ^2 \\
     	& = \frac{1}{2} \sum_i ( y_i - \sum_j x_{ij} \beta_j )^2 \\
@@ -57,6 +58,7 @@ L 	& = \frac{1}{2} \parallel y-X\beta \parallel _2 ^2 \\
   	& = - x_k^T (y-X_{(-k)}\beta_{(-k)} ) + x_k^T x_k \beta_k \\ \\
   \therefore \hat{\beta_k} & = (x_k^T x_k)^{-1}x_k^T (y-X_{(-k)}\beta_{(-k)} )  
   \end{align}
+
 $$
 
 - ### Implementation in C++
@@ -123,7 +125,10 @@ int main(){
 
    	*  [Coursera](https://www.coursera.org/lecture/ml-regression/coordinate-descent-for-least-squares-regression-normalized-features-wkbZU)
       	*  [Ryan Tibshirani](https://www.cs.cmu.edu/~ggordon/10725-F12/slides/25-coord-desc.pdf)
-              	*  [Linear algebra with C++](https://www.asc.ohio-state.edu/physics/ntg/6810/readings/hjorth-jensen_notes2012_06.pdf)
+         	*  [Linear algebra with C++](https://www.asc.ohio-state.edu/physics/ntg/6810/readings/hjorth-jensen_notes2012_06.pdf)
+  	*  http://stanford.edu/~boyd/index.html
+  	*  http://hua-zhou.github.io/
+
 
 
 
@@ -145,24 +150,26 @@ int main(){
     ​	A derivation of estimate in the lasso is as follows.
 
 $$
+
 \begin{align} 
-L 	& = \frac{1}{2} \parallel y-X\beta \parallel _2 ^2 + \lambda \parallel \beta \parallel_1 \\
-    	& = \frac{1}{2} \sum_i ( y_i - \sum_j x_{ij} \beta_j )^2 + \lambda \sum_{j=1}^p |\beta_j| \\
-    	& = \frac{1}{2} \sum_i ( y_i - \sum_j x_{ij} \beta_j )^2 + \lambda \sum_{j=1}^p \beta_j sgn(\beta_j) \\
+L 	& = \frac{1}{2N} \parallel y-X\beta \parallel _2 ^2 + \lambda \parallel \beta \parallel_1 \\
+    	& = \frac{1}{2N} \sum_i ( y_i - \sum_j x_{ij} \beta_j )^2 + \lambda \sum_{j=1}^p |\beta_j| \\
+    	& = \frac{1}{2N} \sum_i ( y_i - \sum_j x_{ij} \beta_j )^2 + \lambda \sum_{j=1}^p \beta_j sgn(\beta_j) \\
   
-  \frac{\partial L}{\partial \beta_k} & = - \sum_i x_{ik} (y_i - \sum_{j\ne k} x_{ij} \beta_j - x_{ik} \beta_k ) + \lambda sgn(\beta_k) \\
-  	& = - x_k^T (y-X_{(-k)}\beta_{(-k)} ) + x_k^T x_k \beta_k + \lambda sgn(\beta_k) \\ \\
+  \frac{\partial L}{\partial \beta_k} & = - \frac{1}{N} \sum_i x_{ik} (y_i - \sum_{j\ne k} x_{ij} \beta_j - x_{ik} \beta_k ) + \lambda sgn(\beta_k) \\
+  	& = - \frac{1}{N} x_k^T (y-X_{(-k)}\beta_{(-k)} ) + \frac{1}{N} x_k^T x_k \beta_k + \lambda sgn(\beta_k) \\ \\
   
    
-  \text{if  } \beta_k > 0, \text{  } \hat{\beta_k} & = (x_k^T x_k)^{-1} \left \{ x_k^T (y-X_{(-k)}\beta_{(-k)} ) - \lambda \right \} _+  \\ \\
+  \text{if  } \beta_k > 0, \text{  } \hat{\beta_k} & = (x_k^T x_k)^{-1} \left \{ x_k^T (y-X_{(-k)}\beta_{(-k)} ) - N \lambda \right \} _+  \\ \\
   
-  \text{if  } \beta_k < 0, \text{  } \hat{\beta_k} & = -(x_k^T x_k)^{-1} \left \{ - x_k^T (y-X_{(-k)}\beta_{(-k)} ) - \lambda \right \} _+  \\ \\
+  \text{if  } \beta_k < 0, \text{  } \hat{\beta_k} & = (x_k^T x_k)^{-1} \left \{ - x_k^T (y-X_{(-k)}\beta_{(-k)} ) - N  \lambda \right \} _+  \\ \\
   
   
-  \therefore \hat{\beta_k} & = (x_k^T x_k)^{-1} \left \{ | x_k^T (y-X_{(-k)}\beta_{(-k)} ) | - \lambda  \right \}_+ sgn(\beta_k)  \\
+  \therefore \hat{\beta_k} & = (x_k^T x_k)^{-1} \left \{ | x_k^T (y-X_{(-k)}\beta_{(-k)} ) | - N  \lambda  \right \}_+ sgn(\beta_k)  \\
   
   
   \end{align}
+  
 $$
 
 - Implemetation in C++
@@ -242,53 +249,117 @@ $$
   
 
 
-
-
-
-
-
 ## 3. Ridge
 
 - ### Derivation
 
-  $$
-  \begin{align}
-  L & = \frac{1}{2} \parallel y-X\beta \parallel_2^2 + \frac{\lambda}{2} \parallel \beta \parallel_2^2 \\
-   & = \frac{1}{2} \sum_{i=1}^{n} \left( y_i - \sum_{j=1}^p x_{ij} \beta_j \right)^2 + \frac{\lambda}{2} \sum_{j=1}^p \beta_j^2 \\
-  
-   \frac{ \partial L }{\partial \beta_k} & = - \sum_{i=1}^n x_{ik} \left( y_i - \sum_{j\ne k}x_{ij} \beta_j - x_{ik}\beta_k \right) + \lambda \beta_k \\
-   & = - x_k^T(y-X_{(-k)}\beta_{(-k)} ) + x_k^Tx_k \beta_k + \lambda \beta_k \\
-  
-   \therefore \hat{\beta_k} & = (x_k^T x_k + \lambda )^{-1}x_k^T (y-X_{(-k)}\beta_{(-k)}).
-
-  \end{align}
 $$
+\begin{align}
+  L & = \frac{1}{2N} \parallel y-X\beta \parallel_2^2 + \frac{\lambda}{2} \parallel \beta \parallel_2^2 \\
+   & = \frac{1}{2N} \sum_{i=1}^{n} \left( y_i - \sum_{j=1}^p x_{ij} \beta_j \right)^2 + \frac{\lambda}{2} \sum_{j=1}^p \beta_j^2 \\
   
+   \frac{ \partial L }{\partial \beta_k} & = - \frac{1}{N} \sum_{i=1}^n x_{ik} \left( y_i - \sum_{j\ne k}x_{ij} \beta_j - x_{ik}\beta_k \right) + \lambda \beta_k \\
+   & = - \frac{1}{N} x_k^T(y-X_{(-k)}\beta_{(-k)} ) + \frac{1}{N} x_k^Tx_k \beta_k + \lambda \beta_k \\
+  
+   \therefore \hat{\beta_k} & = ( \frac{1}{N} x_k^T x_k + N \lambda )^{-1}x_k^T (y-X_{(-k)}\beta_{(-k)}).
+  
+    \end{align}
+$$
+
+
+- Implementation in C++
+
+  ```c++
+  #include <iostream>
+  #include <RcppArmadillo.h>
+  
+  using namespace arma;
+  using namespace std;
+  using namespace Rcpp;
+  
+  // [[Rcpp::depends(RcppArmadillo)]]
+  // [[Rcpp::export]]
+  arma::mat ridge_png(mat X, mat y, int niter, double lambda, double tol){
+    
+    int p = X.n_cols;
+    int N = X.n_rows;
+    mat betak;
+    
+    mat beta(X.n_cols, 1);
+    
+    mat Diag_lambda (p, p);
+    Diag_lambda.fill(0);
+    for( int j=0; j<p; j++ ){
+      Diag_lambda(j,j) = 0.1;
+    }
+    
+    mat fitted_values_old, fitted_values_new;
+    
+    beta = solve((X.t()*X + Diag_lambda), X.t() * y );
+    while( convergence_value > tol ){
+      
+      fitted_values_old = X * beta;
+      
+      for( int k=0; k<(int)X.n_cols; k++ ){
+        
+        mat Xmk;
+        mat betamk;
+        
+        Xmk = X;
+        betamk = beta;
+        mat Xk = X.col(k);
+        
+        Xmk.col(k).fill(0);
+        betamk.row(k) = 0;
+        
+        double betak_hat = arma::as_scalar( Xk.t() * (y - Xmk * betamk ) );
+        // cout << betak_hat << endl;
+        
+        betak = betak_hat / arma::as_scalar(Xk.t() * Xk + 158.8954*lambda );
+        
+        beta.row(k) = betak;
+      }
+        
+      fitted_values_new = X * beta;
+      
+      double convergence_value=0.0;
+      for( int h=0; h<(int)y.n_rows; h++ ){
+        convergence_value += arma::as_scalar( (fitted_values_old.row(h)-fitted_values_new.row(h)) * 
+          (fitted_values_old.row(h)-fitted_values_new.row(h)) ) / N ;
+      } 
+    }
+  
+    return beta; 
+  }
+  ```
 
   
-  
+
 
 ## 4. Elastic-net
 
 - ### Derivation
+
 $$
-  \begin{align}
+\begin{align}
 
-  L & = \frac{1}{2} \parallel y-X\beta \parallel_2^2 + \lambda \left( \frac{1-\alpha}{2} \parallel \beta \parallel_2^2 + \alpha \parallel \beta \parallel _1 \right) \\
+  L & = \frac{1}{2N} \parallel y-X\beta \parallel_2^2 + \lambda \left( \frac{1-\alpha}{2} \parallel \beta \parallel_2^2 + \alpha \parallel \beta \parallel _1 \right) \\
 
-  & = \frac{1}{2} \sum_{i=1}^n \left( y_i - \sum_{j=1}^px_ij\beta_j \right)^2 + \lambda \left( \frac{1-\alpha}{2} \sum_{j=1}^p \beta_j^2 + \alpha \sum_{j=1}^p | \beta_j | \right) \\
+  & = \frac{1}{2N} \sum_{i=1}^n \left( y_i - \sum_{j=1}^px_ij\beta_j \right)^2 + \lambda \left( \frac{1-\alpha}{2} \sum_{j=1}^p \beta_j^2 + \alpha \sum_{j=1}^p | \beta_j | \right) \\
 
-  \frac{\partial L}{\partial \beta_k}  & = - \sum_{i=1}^n x_{ik} \left( y_i - \sum_{j\ne k}^p x_ij \beta_j - x_{ik} \beta_k \right) + \lambda \left( (1-\alpha)\beta_k + \alpha  sgn(\beta_k) \right) \\
+  \frac{\partial L}{\partial \beta_k}  & = - \frac{1}{N} \sum_{i=1}^n x_{ik} \left( y_i - \sum_{j\ne k}^p x_ij \beta_j - x_{ik} \beta_k \right) + \lambda \left( (1-\alpha)\beta_k + \alpha  sgn(\beta_k) \right) \\
 
-    & = - x_k^T (y - X_{(-k)} \beta_{(-k)}) + x_k^T x_k \beta_k + \lambda \left( (1-\alpha)\beta_k + \alpha sgn(\beta_k) \right) \\ \\
+    & = - \frac{1}{N} x_k^T (y - X_{(-k)} \beta_{(-k)}) + \frac{1}{N} x_k^T x_k \beta_k + \lambda \left( (1-\alpha)\beta_k + \alpha sgn(\beta_k) \right) \\ \\
     
-    \therefore \hat{\beta_k} & = \frac{ \left( | x_k^T(y-X_{(-k)}\beta_{(-k)}) | - \alpha  \right )_+ sgn(\beta_k) }{x_k^T x_k + \lambda(1-\alpha) }
+    \therefore \hat{\beta_k} & = \frac{ \left( | x_k^T(y-X_{(-k)}\beta_{(-k)}) | - N \lambda \alpha  \right )_+ sgn(\beta_k) }{x_k^T x_k + N \lambda(1-\alpha) }
 
   
+
+
 
   \end{align}
 $$
-  
+
 
 
 
@@ -297,8 +368,9 @@ $$
 ## 5. Block coordinate descent (multi-response elastic-net)
 
 - ### Derivation
+
 $$
-  \begin{align}
+\begin{align}
 
   L & = \frac{1}{2} \parallel Y-XB \parallel_2^2 + \lambda \left( \frac{1-\alpha}{2} \parallel B \parallel_F^2 + \alpha \sum_{j=1}^p \parallel B_{j\cdot} \parallel_2 \right) \\
 
@@ -309,8 +381,6 @@ $$
 
     & = - x_k^T ( Y - \sum_{j\ne k}^p x_{\cdot j} B_{j\cdot} )  + x_k^T x_k B_{k\cdot} + \lambda (1-\alpha) B_{k\cdot} + \lambda \alpha \frac{B_{k\cdot}}{\parallel B_{k\cdot} \parallel_2} sgn(B_{k\cdot} ) \\\\
 
-  
-
   \text{Since }B_{k\cdot} & =  (x_k^T x_k)^{-1} x_k^T ( Y - X_{(-k)} B_{(-k)} ), \\\\
 
   \frac{\partial L}{\partial B_{k\cdot}} & = - x_k^T ( Y - \sum_{j\ne k}^p x_{\cdot j} B_{j\cdot} )  + x_k^T x_k B_{k\cdot} + \lambda (1-\alpha) B_{k\cdot} + \lambda \alpha \frac{x_k^T (Y-X_{(-k)}B_{(-k)})} {\parallel x_k^T( Y-X_{(-k)}B_{(-k)} ) \parallel_2} sgn(B_{k\cdot}) ) \\
@@ -318,10 +388,14 @@ $$
     \therefore \hat{B}_{k\cdot} & = \frac{1}{x_k^T x_k + \lambda(1-\alpha) }  { \left( 1 - \frac{ \lambda \alpha} {\parallel x_k^T (Y-X_{(-k)}B_{(-k)}) \parallel_2 }  \right) _+ x_k^T (Y-X_{(-k)} B_{(-k)}) }
 
   \end{align}
-  $$
+$$
 
   
 
   - I cannot understand why $ B_{k\cdot} $ is replaced by the partial residual term.
 
 
+
+```
+
+```
