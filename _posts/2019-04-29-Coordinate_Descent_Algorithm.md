@@ -48,7 +48,6 @@ author: Kipoong Kim
     ​	A derivation of estimate in linear regression is as follows.
 
 $$
-
 \begin{align} 
 L 	& = \frac{1}{2} \parallel y-X\beta \parallel _2 ^2 \\
     	& = \frac{1}{2} \sum_i ( y_i - \sum_j x_{ij} \beta_j )^2 \\
@@ -58,7 +57,6 @@ L 	& = \frac{1}{2} \parallel y-X\beta \parallel _2 ^2 \\
   	& = - x_k^T (y-X_{(-k)}\beta_{(-k)} ) + x_k^T x_k \beta_k \\ \\
   \therefore \hat{\beta_k} & = (x_k^T x_k)^{-1}x_k^T (y-X_{(-k)}\beta_{(-k)} )  
   \end{align}
-
 $$
 
 - ### Implementation in C++
@@ -125,7 +123,7 @@ int main(){
 
    	*  [Coursera](https://www.coursera.org/lecture/ml-regression/coordinate-descent-for-least-squares-regression-normalized-features-wkbZU)
       	*  [Ryan Tibshirani](https://www.cs.cmu.edu/~ggordon/10725-F12/slides/25-coord-desc.pdf)
-         	*  [Linear algebra with C++](https://www.asc.ohio-state.edu/physics/ntg/6810/readings/hjorth-jensen_notes2012_06.pdf)
+              	*  [Linear algebra with C++](https://www.asc.ohio-state.edu/physics/ntg/6810/readings/hjorth-jensen_notes2012_06.pdf)
   	*  http://stanford.edu/~boyd/index.html
   	*  http://hua-zhou.github.io/
 
@@ -150,7 +148,6 @@ int main(){
     ​	A derivation of estimate in the lasso is as follows.
 
 $$
-
 \begin{align} 
 L 	& = \frac{1}{2N} \parallel y-X\beta \parallel _2 ^2 + \lambda \parallel \beta \parallel_1 \\
     	& = \frac{1}{2N} \sum_i ( y_i - \sum_j x_{ij} \beta_j )^2 + \lambda \sum_{j=1}^p |\beta_j| \\
@@ -345,9 +342,9 @@ $$
 
   L & = \frac{1}{2N} \parallel y-X\beta \parallel_2^2 + \lambda \left( \frac{1-\alpha}{2} \parallel \beta \parallel_2^2 + \alpha \parallel \beta \parallel _1 \right) \\
 
-  & = \frac{1}{2N} \sum_{i=1}^n \left( y_i - \sum_{j=1}^px_ij\beta_j \right)^2 + \lambda \left( \frac{1-\alpha}{2} \sum_{j=1}^p \beta_j^2 + \alpha \sum_{j=1}^p | \beta_j | \right) \\
+  & = \frac{1}{2N} \sum_{i=1}^n \left( y_i - \sum_{j=1}^px_{ij}\beta_j \right)^2 + \lambda \left( \frac{1-\alpha}{2} \sum_{j=1}^p \beta_j^2 + \alpha \sum_{j=1}^p | \beta_j | \right) \\
 
-  \frac{\partial L}{\partial \beta_k}  & = - \frac{1}{N} \sum_{i=1}^n x_{ik} \left( y_i - \sum_{j\ne k}^p x_ij \beta_j - x_{ik} \beta_k \right) + \lambda \left( (1-\alpha)\beta_k + \alpha  sgn(\beta_k) \right) \\
+  \frac{\partial L}{\partial \beta_k}  & = - \frac{1}{N} \sum_{i=1}^n x_{ik} \left( y_i - \sum_{j\ne k}^p x_{ij} \beta_j - x_{ik} \beta_k \right) + \lambda \left( (1-\alpha)\beta_k + \alpha  sgn(\beta_k) \right) \\
 
     & = - \frac{1}{N} x_k^T (y - X_{(-k)} \beta_{(-k)}) + \frac{1}{N} x_k^T x_k \beta_k + \lambda \left( (1-\alpha)\beta_k + \alpha sgn(\beta_k) \right) \\ \\
     
@@ -360,7 +357,361 @@ $$
   \end{align}
 $$
 
+- Implementation in C++ (Standardized predictor with intercept)
 
+  ```c++
+  
+  #include <iostream>
+  #include <RcppArmadillo.h>
+  
+  using namespace arma;
+  using namespace std;
+  using namespace Rcpp;
+  
+  // [[Rcpp::depends(RcppArmadillo)]]
+  
+  double CalcMSE(arma::mat oldY, arma::mat newY){
+    int N = oldY.n_rows;
+    double MSE=0.0;
+    for( int h=0; h<N; h++ ){
+      MSE += arma::as_scalar( (oldY.row(h)-newY.row(h)) * 
+        (oldY.row(h)-newY.row(h)) ) / N;
+    }
+    return MSE;
+  }
+  
+  double soft_thresholding(double value){
+    double out;
+    if( value >= 0 ){
+      out = value;
+    } else {
+      out = 0.0;
+    }
+    return out;
+  }
+  
+  mat standardize(mat XX){
+    int N = XX.n_rows;
+    int p = XX.n_cols;
+    mat SDofX(p, 1);
+    
+    for( int jj=0; jj<p; jj++ ){
+      double meanX = 0.0;
+      double sqmeanX = 0.0;
+      for( int ii=0; ii<N; ii++ ){
+        meanX += XX(ii,jj)/N;
+        sqmeanX += pow(XX(ii,jj), 2)/N;
+      }
+      SDofX.row(jj) = sqrt( sqmeanX - pow(meanX,2) );
+      XX.col(jj) = ( XX.col(jj) - meanX ) / arma::as_scalar(SDofX.row(jj));
+    }
+    
+    return XX;
+  }
+  
+  // [[Rcpp::export]]
+  arma::mat elnet_png(mat X, mat y, double lambda, double alpha, double tol){
+    
+    int p = X.n_cols;
+    int N = X.n_rows;
+    double meanY = 0.0;
+    double sqmeanY = 0.0;
+    double SDofY;
+    
+    // mat I = arma::eye<mat>(N, N);
+    // mat J(N, N);
+    // J.fill(1/N);
+    // X.insert_cols( 0, ones<vec>(N) );
+    mat SDofX(p, 1);
+    mat MEANofX(p, 1);
+    mat SQofX(p, 1);
+    
+    for( int jj=0; jj<p; jj++ ){
+      double meanX = 0.0;
+      double sqmeanX = 0.0;
+      for( int ii=0; ii<N; ii++ ){
+        meanX += X(ii,jj)/N;
+        sqmeanX += pow(X(ii,jj), 2)/N;
+      }
+      SQofX.row(jj) = sqmeanX;
+      MEANofX.row(jj) = meanX;
+      SDofX.row(jj) = sqrt( sqmeanX - pow(meanX,2) );
+      X.col(jj) = ( X.col(jj) - meanX ) / arma::as_scalar(SDofX.row(jj));
+    }
+     
+    for( int ii=0; ii<N; ii++ ){
+      meanY += arma::as_scalar( y.row(ii) )/N;
+      sqmeanY += pow( arma::as_scalar( y.row(ii) ), 2 )/N;
+    }
+    
+    SDofY = sqrt(sqmeanY-pow(meanY, 2));
+    y = (y-meanY) / SDofY;
+    
+    mat betak;
+    mat beta(X.n_cols, 1);
+    
+    mat Diag_lambda (p, p);
+    Diag_lambda.fill(0);
+    for( int j=0; j<p; j++ ){
+      Diag_lambda(j,j) = 0.1;
+    }
+    
+    mat fitted_values_old, fitted_values_new(N, 1);
+    beta = solve((X.t()*X + Diag_lambda), X.t() * y );
+    
+    double convergence_value = tol+1.0;
+    while( convergence_value > tol ){
+      
+      fitted_values_old = X * beta;
+      
+      for( int k=0; k<(int)X.n_cols; k++ ){
+        
+        mat Xmk;
+        mat betamk;
+        
+        Xmk = X;
+        betamk = beta;
+        mat Xk = X.col(k);
+        
+        Xmk.col(k).fill(0);
+        betamk.row(k) = 0;
+        
+        double betak_hat = arma::as_scalar( Xk.t() * (y - Xmk * betamk ) );
+        if( betak_hat > 0 ){
+          betak = soft_thresholding(abs(betak_hat) - N*lambda*alpha) / arma::as_scalar(Xk.t() * Xk + N * lambda * (1.0-alpha) );
+        } else {
+          betak = - soft_thresholding(abs(betak_hat) - N*lambda*alpha) / arma::as_scalar(Xk.t() * Xk + N * lambda * (1.0-alpha) );
+        }
+        beta.row(k) = betak;
+      }
+      
+      fitted_values_new = X * beta;
+      
+      convergence_value = CalcMSE(fitted_values_old, fitted_values_new);
+        
+    }
+    
+    cout << "The convergence value is = " <<
+      convergence_value << endl;
+    
+    cout << "Beta = " << beta << endl;
+    
+   mat unstd_beta(p,1);
+    double intercept=meanY;
+    for( int jj=0; jj<p; jj++ ){
+      unstd_beta.row(jj) = ( beta.row(jj) * (SDofY/SDofX.row(jj)) ) ;
+      intercept += - arma::as_scalar( unstd_beta.row(jj)*MEANofX.row(jj) );
+    }
+    
+    cout << "intercept = " << intercept << endl;
+    
+    unstd_beta.insert_rows(0, intercept);
+    
+    return unstd_beta;
+  }
+  
+  ```
+
+- Implementation in C++ (Full version which is confirmed for only centered predictors)
+
+  ```c++
+  #include <iostream>
+  #include <RcppArmadillo.h>
+  
+  using namespace arma;
+  using namespace std;
+  using namespace Rcpp;
+  
+  // [[Rcpp::depends(RcppArmadillo)]]
+  
+  double CalcMSE(arma::mat oldY, arma::mat newY){
+    int N = oldY.n_rows;
+    double MSE=0.0;
+    for( int h=0; h<N; h++ ){
+      MSE += arma::as_scalar( (oldY.row(h)-newY.row(h)) * 
+        (oldY.row(h)-newY.row(h)) ) / N;
+    }
+    return MSE;
+  }
+  
+  double soft_thresholding(double value){
+    double out;
+    if( value >= 0 ){
+      out = value;
+    } else {
+      out = 0.0;
+    }
+    return out;
+  }
+  
+  mat scaling(mat XX){
+    int N = XX.n_rows;
+    int p = XX.n_cols;
+    mat SDofX(p, 1);
+    
+    for( int jj=0; jj<p; jj++ ){
+      double meanX = 0.0;
+      double sqmeanX = 0.0;
+      for( int ii=0; ii<N; ii++ ){
+        meanX += XX(ii,jj)/N;
+        sqmeanX += pow(XX(ii,jj), 2)/N;
+      }
+      SDofX.row(jj) = sqrt( sqmeanX - pow(meanX,2) );
+      XX.col(jj) = ( XX.col(jj) - meanX ) / arma::as_scalar(SDofX.row(jj));
+    }
+    
+    return XX;
+  }
+  
+  // [[Rcpp::export]]
+  arma::mat elnet_png(mat X, mat y, double lambda, double alpha, double tol, bool standardize, bool intercept){
+    
+    int p = X.n_cols;
+    int N = X.n_rows;
+    double meanY = 0.0;
+    double sqmeanY = 0.0;
+    double SDofY;
+    
+    // mat I = arma::eye<mat>(N, N);
+    // mat J(N, N);
+    // J.fill(1/N);
+    // X.insert_cols( 0, ones<vec>(N) );
+    
+    mat SDofX(p, 1);
+    mat MEANofX(p, 1);
+    mat SQofX(p, 1);
+    
+    if( standardize ){
+      for( int jj=0; jj<p; jj++ ){
+        double meanX = 0.0;
+        double sqmeanX = 0.0;
+        for( int ii=0; ii<N; ii++ ){
+          meanX += X(ii,jj)/N;
+          sqmeanX += pow(X(ii,jj), 2)/N;
+        }
+        SQofX.row(jj) = sqmeanX;
+        MEANofX.row(jj) = meanX;
+        SDofX.row(jj) = sqrt( sqmeanX - pow(meanX,2) );
+        X.col(jj) = ( X.col(jj) - arma::as_scalar( MEANofX.row(jj) ) ) / arma::as_scalar(SDofX.row(jj));
+      }
+    } else {
+      MEANofX.fill(0);
+      SDofX.fill(1);
+    }
+    
+    if( intercept ){
+      X.insert_cols(0, ones<mat>(N, 1));
+      MEANofX.insert_rows(0, zeros<mat>(1,1));
+      SDofX.insert_rows(1, ones<mat>(1,1));
+      p = X.n_cols;
+    }
+    
+     
+    for( int ii=0; ii<N; ii++ ){
+      meanY += arma::as_scalar( y.row(ii) )/N;
+      sqmeanY += pow( arma::as_scalar( y.row(ii) ), 2 )/N;
+    }
+    
+    SDofY = sqrt(sqmeanY-pow(meanY, 2));
+    y = (y-meanY) / SDofY;
+    lambda = lambda/SDofY;
+    
+    mat betak;
+    mat beta(X.n_cols, 1);
+    
+    mat Diag_lambda (p, p);
+    Diag_lambda.fill(0);
+    for( int j=0; j<p; j++ ){
+      Diag_lambda(j,j) = 0.1;
+    }
+    
+    mat fitted_values_old, fitted_values_new(N, 1);
+    beta = solve((X.t()*X + Diag_lambda), X.t() * y );
+    
+    cout << "MEANofX = " << MEANofX << endl;
+    cout << "SDofX = " << SDofX << endl;
+    cout << "beta = " << beta << endl;
+    
+    int conv_count=0;
+    double convergence_value = tol+1.0;
+    while( convergence_value > tol ){
+      
+      conv_count += 1;
+      cout << conv_count << endl;
+      
+      fitted_values_old = X * beta;
+      
+      for( int k=0; k<(int)X.n_cols; k++ ){
+        
+        mat Xmk;
+        mat betamk;
+        
+        Xmk = X;
+        betamk = beta;
+        mat Xk = X.col(k);
+        
+        Xmk.col(k).fill(0);
+        betamk.row(k) = 0;
+        
+        double betak_hat = arma::as_scalar( Xk.t() * (y - Xmk * betamk ) );
+        if( betak_hat > 0 ){
+          betak = soft_thresholding(abs(betak_hat) - N*lambda*alpha) / arma::as_scalar(Xk.t() * Xk + N * lambda * (1.0-alpha) );
+        } else {
+          betak = - soft_thresholding(abs(betak_hat) - N*lambda*alpha) / arma::as_scalar(Xk.t() * Xk + N * lambda * (1.0-alpha) );
+        }
+        beta.row(k) = betak;
+      }
+      
+      fitted_values_new = X * beta;
+      
+      convergence_value = CalcMSE(fitted_values_old, fitted_values_new);
+        
+    }
+    
+    cout << "The convergence value is = " <<
+      convergence_value << endl;
+    
+    cout << "Beta = " << endl << beta << endl;
+  
+    mat unstd_beta(p,1);
+    for( int jj=0; jj<p; jj++ ){
+      unstd_beta.row(jj) = ( beta.row(jj) * (SDofY/SDofX.row(jj)) ) ;
+    }  
+  
+    cout << "UnstdBeta = " << endl << unstd_beta << endl;
+    
+    if( intercept ){
+      unstd_beta.row(0) = unstd_beta.row(0) + meanY;
+    } else {
+      unstd_beta.insert_rows(0, zeros<mat>(1,1));
+    }
+      
+    double intcpt;
+    if( intercept ){
+      // mat unstd_beta(p,1);
+      intcpt = meanY;
+      for( int jj=1; jj<p; jj++ ){
+        // unstd_beta.row(jj) = ( beta.row(jj) * (SDofY/SDofX.row(jj)) ) ;
+        unstd_beta.row(0) += - arma::as_scalar( unstd_beta.row(jj)*MEANofX.row(jj) );
+        intcpt += - arma::as_scalar( unstd_beta.row(jj)*MEANofX.row(jj) );
+      }
+    
+      cout << "intercept = " << intcpt << endl;
+      
+    } else {
+      intcpt = 0.0;
+    }
+    
+    // mat out(p+1, 1);
+    // out.rows(1, p) = unstd_beta;
+    // out.rows(0, 0) = intcpt;
+    
+    return unstd_beta;
+    
+  }
+  ```
+
+  
 
 
 
