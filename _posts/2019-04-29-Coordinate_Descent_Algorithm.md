@@ -706,7 +706,7 @@ $$
 
 
 
-## 5. Block coordinate descent (multi-response elastic-net)
+## 5. Block-wise coordinate descent (for multi-response elastic-net)
 
 - ### Derivation
 
