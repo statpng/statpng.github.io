@@ -713,23 +713,22 @@ $$
 $$
 \begin{align}
 
-  L & = \frac{1}{2} \parallel Y-XB \parallel_2^2 + \lambda \left( \frac{1-\alpha}{2} \parallel B \parallel_F^2 + \alpha \sum_{j=1}^p \parallel B_{j\cdot} \parallel_2 \right) \\
+  L & = \frac{1}{2N} \parallel Y-XB \parallel_2^2 + \lambda \left( \frac{1-\alpha}{2} \parallel B \parallel_F^2 + \alpha \sum_{j=1}^p \parallel B_{j\cdot} \parallel_2 \right) \\
 
-  & = \frac{1}{2} \sum_{i=1}^n \parallel y_{i\cdot} - \sum_{j=1}^p x_{ij} B_{j\cdot} \parallel_2^2 + \lambda \left( \frac{1-\alpha}{2} \sum_{j=1}^p \parallel B_{j\cdot} \parallel_2^2 + \alpha \sum_{j=1}^p \parallel B_{j\cdot} \parallel_2 \right) \\
+  & = \frac{1}{2N} \sum_{i=1}^n \parallel y_{i\cdot} - \sum_{j=1}^p x_{ij} B_{j\cdot} \parallel_2^2 + \lambda \left( \frac{1-\alpha}{2} \sum_{j=1}^p \parallel B_{j\cdot} \parallel_2^2 + \alpha \sum_{j=1}^p \parallel B_{j\cdot} \parallel_2 \right) \\
 
 
-  \frac{\partial L}{\partial B_{k\cdot}}  & = - \sum_{i=1}^n x_{ik} ( y_{i\cdot} - \sum_{j\ne k}^p x_{ij} B_{j\cdot} - x_{ik} B_{k\cdot} ) + \lambda \left( (1-\alpha)B_{k\cdot} + \alpha \frac{B_{k\cdot}}{\parallel B_{k\cdot} \parallel_2} sgn(B_{k\cdot}) \right) \\
+  \frac{\partial L}{\partial B_{k\cdot}}  & = - \frac{1}{N} \sum_{i=1}^n x_{ik} ( y_{i\cdot} - \sum_{j\ne k}^p x_{ij} B_{j\cdot} - x_{ik} B_{k\cdot} ) + \lambda \left( (1-\alpha)B_{k\cdot} + \alpha \frac{B_{k\cdot}}{\parallel B_{k\cdot} \parallel_2} sgn(B_{k\cdot}) \right) \\
 
-    & = - x_k^T ( Y - \sum_{j\ne k}^p x_{\cdot j} B_{j\cdot} )  + x_k^T x_k B_{k\cdot} + \lambda (1-\alpha) B_{k\cdot} + \lambda \alpha \frac{B_{k\cdot}}{\parallel B_{k\cdot} \parallel_2} sgn(B_{k\cdot} ) \\\\
+    & = - \frac{1}{N} x_k^T ( Y - \sum_{j\ne k}^p x_{\cdot j} B_{j\cdot} )  + \frac{1}{N} x_k^T x_k B_{k\cdot} + \lambda (1-\alpha) B_{k\cdot} + \lambda \alpha \frac{B_{k\cdot}}{\parallel B_{k\cdot} \parallel_2} sgn(B_{k\cdot} ) \\\\
 
   \text{Since }B_{k\cdot} & =  (x_k^T x_k)^{-1} x_k^T ( Y - X_{(-k)} B_{(-k)} ), \\\\
 
-  \frac{\partial L}{\partial B_{k\cdot}} & = - x_k^T ( Y - \sum_{j\ne k}^p x_{\cdot j} B_{j\cdot} )  + x_k^T x_k B_{k\cdot} + \lambda (1-\alpha) B_{k\cdot} + \lambda \alpha \frac{x_k^T (Y-X_{(-k)}B_{(-k)})} {\parallel x_k^T( Y-X_{(-k)}B_{(-k)} ) \parallel_2} sgn(B_{k\cdot}) ) \\
+  \frac{\partial L}{\partial B_{k\cdot}} & = - \frac{1}{N} x_k^T ( Y - \sum_{j\ne k}^p x_{\cdot j} B_{j\cdot} )  + \frac{1}{N} x_k^T x_k B_{k\cdot} + \lambda (1-\alpha) B_{k\cdot} + \lambda \alpha \frac{x_k^T (Y-X_{(-k)}B_{(-k)})} {\parallel x_k^T( Y-X_{(-k)}B_{(-k)} ) \parallel_2} sgn(B_{k\cdot}) ) \\
 
-    \therefore \hat{B}_{k\cdot} & = \frac{1}{x_k^T x_k + \lambda(1-\alpha) }  { \left( 1 - \frac{ \lambda \alpha} {\parallel x_k^T (Y-X_{(-k)}B_{(-k)}) \parallel_2 }  \right) _+ x_k^T (Y-X_{(-k)} B_{(-k)}) }
+    \therefore \hat{B}_{k\cdot} & = \frac{1}{x_k^T x_k + N \lambda(1-\alpha) }  { \left( 1 - \frac{ N \lambda \alpha} {\parallel x_k^T (Y-X_{(-k)}B_{(-k)}) \parallel_2 }  \right) _+ x_k^T (Y-X_{(-k)} B_{(-k)}) }
 
   \end{align}
-  
 $$
 
 ​		- I cannot understand why $ B_{k\cdot} $ could be replaced by the partial residual term.
@@ -739,14 +738,12 @@ $$
     If $  B_{j1} = \cdots = B_{jM}=b, \text{ where } j=1,\cdots,p $, then
 
     $$
-
-    \begin{align}
+\begin{align}
        \parallel B_{j\cdot} \parallel_2 & = \sqrt{ M \times b^2 } \\
     & = \sqrt{M} \times \lvert b \rvert \\
     & = \sum_{m=1}^M \frac{\lvert b \rvert}{\sqrt{M}} \\
     & = \frac{1}{\sqrt{M}}\parallel B_{\cdot m} \parallel_1,
     \end{align}
-
     $$
 
     where $ m=1,\cdots,M $.
@@ -754,9 +751,9 @@ $$
     The objective function can be expressed as
 
     $$
-        L = \sum_{m=1}^M \left\{ \frac{1}{2N} \parallel Y_1 - XB_{\cdot m} \parallel_2^2  + \lambda ( \frac{1-\alpha}{2}\parallel B_{\cdot m} \parallel_2^2 + \frac{\alpha}{\sqrt{M}} \parallel B_{\cdot m} \parallel_1 ) \right\}. \\
-        $$
-
+    L = \sum_{m=1}^M \left\{ \frac{1}{2N} \parallel Y_1 - XB_{\cdot m} \parallel_2^2  + \lambda ( \frac{1-\alpha}{2}\parallel B_{\cdot m} \parallel_2^2 + \frac{\alpha}{\sqrt{M}} \parallel B_{\cdot m} \parallel_1 ) \right\}. \\
+    $$
+    
     This yields the equivalent solution with univariate elastic-net.
 
     
