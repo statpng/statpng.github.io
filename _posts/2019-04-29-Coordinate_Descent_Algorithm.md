@@ -24,23 +24,13 @@ author: Kipoong Kim
 
   - We can consider the linear regression framework as:
 
-    
-
     $$ y_i=x_i\beta + \epsilon_i $$
-
-    
 
     The least squares solve the problem
 
-    
-
     $$ \parallel y-X\beta \parallel _2^2, $$
 
-    
-
     where $\parallel \cdot \parallel_2$ represents the $\ell _2$ norm. 
-
-    
 
     ​	However, in several cases, we cannot get an explicit solution. To solve this problem, coordinate descent algorithm(CCD) optimize the obejective function for each variable assuming that others are fixed. 
     ​	For example, there are five variables associated with a continuous response variable. Firstly, we set an initial value to estimate regression coefficients and CCD find a estimates for the first predictor regardless of others. And it estimates the second regression coefficient with the updated initial value, so on.
@@ -739,13 +729,39 @@ $$
     \therefore \hat{B}_{k\cdot} & = \frac{1}{x_k^T x_k + \lambda(1-\alpha) }  { \left( 1 - \frac{ \lambda \alpha} {\parallel x_k^T (Y-X_{(-k)}B_{(-k)}) \parallel_2 }  \right) _+ x_k^T (Y-X_{(-k)} B_{(-k)}) }
 
   \end{align}
+  
 $$
 
-  
+​		- I cannot understand why $ B_{k\cdot} $ could be replaced by the partial residual term.
 
-  - I cannot understand why $ B_{k\cdot} $ is replaced by the partial residual term.
+  * ### **Remark**
 
+    If $  B_{j1} = \cdots = B_{jM}=b, \text{ where } j=1,\cdots,p $, then
 
+    $$
+
+    \begin{align}
+       \parallel B_{j\cdot} \parallel_2 & = \sqrt{ M \times b^2 } \\
+    & = \sqrt{M} \times \lvert b \rvert \\
+    & = \sum_{m=1}^M \frac{\lvert b \rvert}{\sqrt{M}} \\
+    & = \frac{1}{\sqrt{M}}\parallel B_{\cdot m} \parallel_1,
+    \end{align}
+
+    $$
+
+    where $ m=1,\cdots,M $.
+
+    The objective function can be expressed as
+
+    $$
+        L = \sum_{m=1}^M \left\{ \frac{1}{2N} \parallel Y_1 - XB_{\cdot m} \parallel_2^2  + \lambda ( \frac{1-\alpha}{2}\parallel B_{\cdot m} \parallel_2^2 + \frac{\alpha}{\sqrt{M}} \parallel B_{\cdot m} \parallel_1 ) \right\}. \\
+        $$
+
+    This yields the equivalent solution with univariate elastic-net.
+
+    
+
+  * ### Implementation in C++
 
 ```
 
