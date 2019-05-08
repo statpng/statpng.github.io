@@ -768,7 +768,7 @@ $$
         L = \sum_{m=1}^M \left\{ \frac{1}{2N} \parallel Y_1 - XB_{\cdot m} \parallel_2^2  + \lambda ( \frac{1-\alpha}{2}\parallel B_{\cdot m} \parallel_2^2 + \frac{\alpha}{\sqrt{M}} \parallel B_{\cdot m} \parallel_1 ) \right\}. \\
     $$
 
-    This yields the results equivalent to univariate elastic-net by selection probability. 
+    This yields the results of selection probabilities equivalent to univariate elastic-net. 
 
     
 
