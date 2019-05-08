@@ -708,7 +708,15 @@ $$
 
 ## 5. Block-wise coordinate descent (for multi-response elastic-net)
 
-- ### Derivation
+- #### Let us consider a framework to simulate multivariate multiple regression
+
+  $$
+  Y = XB+W,
+  $$
+
+  where $ W \sim MVN(0, \Sigma_Y) $, and $\Sigma_Y$ is an equicorrelation matrix with $\rho_y=0, 0.2, 0.5, 0.8$.
+
+- ### Derivation of estimator for multi-response elastic-net
 
 $$
 \begin{align}
@@ -738,25 +746,45 @@ $$
     If $  B_{j1} = \cdots = B_{jM}=b, \text{ where } j=1,\cdots,p $, then
 
     $$
-\begin{align}
-       \parallel B_{j\cdot} \parallel_2 & = \sqrt{ M \times b^2 } \\
-    & = \sqrt{M} \times \lvert b \rvert \\
-    & = \sum_{m=1}^M \frac{\lvert b \rvert}{\sqrt{M}} \\
-    & = \frac{1}{\sqrt{M}}\parallel B_{\cdot m} \parallel_1,
+    \begin{align}
+       \parallel B_{j\cdot} \parallel_2 
+       & = \sqrt{\sum_{m=1}^{M} B_{jm}^2} \\
+       & = \sqrt{ M \times b^2 } \\
+       & = \sqrt{M} \times \lvert b \rvert \\
+       & = \sum_{m=1}^M \frac{\lvert b \rvert}{\sqrt{M}} \\
+       \therefore \sum_{j=1}^p\parallel B_{j\cdot} \parallel_2 
+       & = \sum_{m=1}^M \frac{1}{\sqrt{M}} \parallel B_{\cdot m} \parallel_1
+       
     \end{align}
     $$
 
     where $ m=1,\cdots,M $.
 
+    When $ \rho_y $ is high and $\gamma=M$(the number of response variables), the assumption of $  B_{j1} = \cdots = B_{jM}=b $ can be satisfied.
+
     The objective function can be expressed as
 
     $$
-    L = \sum_{m=1}^M \left\{ \frac{1}{2N} \parallel Y_1 - XB_{\cdot m} \parallel_2^2  + \lambda ( \frac{1-\alpha}{2}\parallel B_{\cdot m} \parallel_2^2 + \frac{\alpha}{\sqrt{M}} \parallel B_{\cdot m} \parallel_1 ) \right\}. \\
+        L = \sum_{m=1}^M \left\{ \frac{1}{2N} \parallel Y_1 - XB_{\cdot m} \parallel_2^2  + \lambda ( \frac{1-\alpha}{2}\parallel B_{\cdot m} \parallel_2^2 + \frac{\alpha}{\sqrt{M}} \parallel B_{\cdot m} \parallel_1 ) \right\}. \\
     $$
-    
-    This yields the equivalent solution with univariate elastic-net.
+
+    This yields the results equivalent to univariate elastic-net by selection probability. 
 
     
+
+* <!--On the other hand, when $ \rho_y $ is low and $\gamma=M$,  the causal variants in mgaussian are more frequently selected than in univariate elastic-net as $ \sqrt{\frac{1}{M} \sum{m=1}^M B{jm}^2} \ge  B_{jm} $-->
+
+  
+
+  <!--In the case where at least one coefficient $ B_{jm} $ differs from the other responses, the causal regression coefficients were selected more often as the denominator $ \parallel x_k^T (Y-X_{(-k)}B_{(-k)}) \parallel_2 (= \parallel B_{k \cdot} \parallel_2 )$ of *mgaussian* is larger than that of univariate elastic-net from this:--> 
+
+  <!--
+  $$
+  \hat{B}_{k\cdot} = \frac{1}{x_k^T x_k + N \lambda(1-\alpha) }  { \left( 1 - \frac{ N \lambda \alpha} {\parallel x_k^T (Y-X_{(-k)}B_{(-k)}) \parallel_2 }  \right) _+ x_k^T (Y-X_{(-k)} B_{(-k)}) }
+  $$
+  -->
+
+
 
   * ### Implementation in C++
 
