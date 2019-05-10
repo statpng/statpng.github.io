@@ -13,6 +13,51 @@ author: Kipoong Kim
 
 <!-- more -->
 
+
+
+### Markov chain
+
+We will have a brief introduction to Markov chain to explain the following algorithms.
+
+Let $X_1, \cdots, Xn$ be \italic{iid} mean $\mu$ and variance $\sigma^2$.
+
+Let $ \bar{X_n}=\frac{1}{m} \sum_{i=1}^n X_i $.
+
+- Law of Large Numbers : $\bar{X_n} \rightarrow \mu $ as $n \rightarrow$ with prob $1$ : Sample mean converges to true mean pointwisely.
+
+Markov chain (example of stochastic processes)
+
+While Law of Large Numbers or Central Limit theorem assumes i.i.d. of r.v’s, Markov chain admit their dependency.
+
+We assumes that $X_0, X_1, X_2, \cdots$ (think of $X_n$ as state of system of (discrete) time $n$).
+
+(Markov property)
+
+
+$$
+\begin{align}
+P(X_{n+1}=j | X_n=i, X_{n-1}=i_{n-1}, \cdots, X_0=i_0) &= P(X_{n+1}=j |X_n=i ) \\
+& = q_{ij} ~~ \text{(transition probability)}.
+\end{align}
+$$
+
+
+--> Future and past are conditionally independent.
+
+
+
+# Lecture 1
+
+<iframe height='400' scrolling='yes' title='Fancy Animated SVG Menu' src='https://www.edwith.org/harvardprobability/lecture/30923/' frameborder='no' allowtransparency='true' allowfullscreen='true' style='width: 90%;'></iframe>
+
+# Lecture 2
+<iframe height='400' scrolling='yes' title='Fancy Animated SVG Menu' src='https://www.edwith.org/harvardprobability/lecture/30924/' frameborder='no' allowtransparency='true' allowfullscreen='true' style='width: 90%;'></iframe>
+
+# Lecture 3
+<iframe height='400' scrolling='yes' title='Fancy Animated SVG Menu' src='https://www.edwith.org/harvardprobability/lecture/30925/' frameborder='no' allowtransparency='true' allowfullscreen='true' style='width: 90%;'></iframe>
+
+
+
 ### Metropolis-Hastings algorithm
 
 - Algorithm 1
