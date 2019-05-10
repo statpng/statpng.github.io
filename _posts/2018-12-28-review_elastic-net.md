@@ -13,6 +13,7 @@ author: Kipoong Kim
 Regularization and variable selection via the elastic net
 
 <!-- more -->
+
 Regularization and variable selection via the elastic net
 =========================================================
 
@@ -59,18 +60,15 @@ Hui Zou and Trevor Hastie
 
 - Limitations of the lasso
 ------------
-In the p>n case, selecting at most **n** variables seems to be a limiting feature for a variable selection method.
-------------
-Moreover, the lasso is not well defined unless the bound on the L_1-norm of the coefficients is smaller than a certain value.
-------------
-If there is a group of varialbes among which the pairwise correlations are very high, then the lasso tends to select only one variable from the group and does not care which one is selected.
-------------
+### In the p>n case, selecting at most **n** variables seems to be a limiting feature for a variable selection method.
+### Moreover, the lasso is not well defined unless the bound on the L_1-norm of the coefficients is smaller than a certain value.
+### If there is a group of varialbes among which the pairwise correlations are very high, then the lasso tends to select only one variable from the group and does not care which one is selected.
 For usual n>p situations, if there are high correlations between predictors, it has been empirically observed that the prediction performance of the lasso is dominated by ridge regression.(Tibshirani, 1996)
 
 
 ### Bridge
 
-- sum_i=1:p{|beta_i|^q}
+- $ \sum_{i=1}^p{ \lvert beta_i \rvert ^q } $
 
 
 ### Genomic data
@@ -89,16 +87,20 @@ For usual n>p situations, if there are high correlations between predictors, it 
 - Deficiency: The naive elstic net does not perform satisfactorily unless it's very close to either ridge or lasso regression.
 
 ### Univariate Soft Thresholding
+
 ### Bayesian connections and the Lq-penalty
+
 ### PCA has been used to construct methods for finding a set of highly correlated genes. (Hastie et al (2000) and Diaz-Uriarte (2003))
+
 ### Tree harvesting (Hastie et al., 2003) uses supervised learning methods to select groups of predictive genes found by hierachical clustering)
+
 ### A careful study by Segal and Conklin (2003) strongly motivates the use of a regularization regression to find the grouped genes.
 
 
 
 ### Elastic net
 
-- \hat{\beta}(elastic net) = \sqrt{1+\lambda_2} \hat{\beta *}
+- $ \hat{\beta}(elastic net) = \sqrt{1+\lambda_2} \hat{\beta *} $
 - Decorrelation step: (Xt*X+lambda*I)/(1+lambda)
 - Shrunken estimate: In LDA, the prediction accuracy can often be improved by replacing \hat{\SIGMA} by a shrunken estimate (Friedman, 1989)(Hastie et al., 2001)
 - Computation: an algorithm LARS-EN
@@ -115,42 +117,3 @@ For usual n>p situations, if there are high correlations between predictors, it 
 (c) For those genes sharing the same biological pathway, it should be able to include whole groups into the model automatically once one gene among them is selected.
 
 
-
-## KaTeX
-
-You can render LaTeX mathematical expressions using [KaTeX](https://khan.github.io/KaTeX/):
-
-The *Gamma function* satisfying $\Gamma(n) = (n-1)!\quad\forall n\in\mathbb N$ is via the Euler integral
-
-$$
-\Gamma(z) = \int_0^\infty t^{z-1}e^{-t}dt\,.
-$$
-
-> You can find more information about **LaTeX** mathematical expressions [here](http://meta.math.stackexchange.com/questions/5020/mathjax-basic-tutorial-and-quick-reference).
-
-
-## UML diagrams
-
-You can render UML diagrams using [Mermaid](https://mermaidjs.github.io/). For example, this will produce a sequence diagram:
-
-```mermaid
-sequenceDiagram
-Alice ->> Bob: Hello Bob, how are you?
-Bob-->>John: How about you John?
-Bob--x Alice: I am good thanks!
-Bob-x John: I am good thanks!
-Note right of John: Bob thinks a long<br/>long time, so long<br/>that the text does<br/>not fit on a row.
-
-Bob-->Alice: Checking with John...
-Alice->John: Yes... John, how are you?
-```
-
-And this will produce a flow chart:
-
-```mermaid
-graph LR
-A[Square Rect] -- Link text --> B((Circle))
-A --> C(Round Rect)
-B --> D{Rhombus}
-C --> D
-```
