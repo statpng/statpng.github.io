@@ -17,6 +17,10 @@ In wikipedia, the degrees of freedom is explained as follows.
 
 *In statistics, the number of degrees of freedom is the number of values in the final calculation of a statistic that are free to vary*
 
+Moreover, the degree of freedom also means the model complexity, i.e., the larger the degree of freedom is, the simpler model is. 
+
+
+
 <!-- more -->
 
 As a starting point, suppose that we have a samples of independent normally distributed observations,

@@ -347,6 +347,18 @@ $$
   \end{align}
 $$
 
+- Sequence of lambda
+<https://stats.stackexchange.com/questions/166630/glmnet-compute-maximal-lambda-value>
+  $$
+  
+  \begin{align*}
+  n \alpha \lambda &= \underset{l}{max} \lvert<x_\ell, y>\rvert \\
+  \lambda_{max} &= \underset{l}{max} \frac{1}{n \alpha} ({y - \bar{y}(1-\bar{y}))x_\ell }\\
+  \lambda_{min} &= \epsilon \lambda_{max}, ~~ \text{where $\epsilon=0.001$}.
+  \end{align*}
+  $$
+  
+  
 - Implementation in C++ (Standardized predictor with intercept)
 
   ```c++
