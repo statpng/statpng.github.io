@@ -350,12 +350,11 @@ $$
 - Sequence of lambda
 <https://stats.stackexchange.com/questions/166630/glmnet-compute-maximal-lambda-value>
   $$
-  
   \begin{align*}
   n \alpha \lambda &= \underset{l}{max} \lvert<x_\ell, y>\rvert \\
   \lambda_{max} &= \underset{l}{max} \frac{1}{n \alpha} ({y - \bar{y}(1-\bar{y}))x_\ell }\\
-  \lambda_{min} &= \epsilon \lambda_{max}, ~~ \text{where $\epsilon=0.001$}.
-  \end{align*}
+  \lambda_{min} &= \epsilon \lambda_{max}, ~~ \text{where $\epsilon=\begin{cases} 0.01 & \text{if $n>p$,} \\ 0.0001 & \text{if $n<p$}. \end{cases}$}
+  \end{align*}
   $$
   
   
@@ -728,6 +727,13 @@ $$
 
   where $ W \sim MVN(0, \Sigma_Y) $, and $\Sigma_Y$ is an equicorrelation matrix with $\rho_y=0, 0.2, 0.5, 0.8$.
 
+- Sequence of lambda
+  $$
+  \begin{align*}
+  \lambda_{max} = \underset{\ell}{max} (\frac{1}{n\alpha}\parallel x_\ell^T Y \parallel_2 )
+  \end{align*}
+  $$
+  
 - ### Derivation of estimator for multi-response elastic-net
 
 $$
@@ -798,8 +804,143 @@ $$
 
 
 
-  * ### Implementation in C++
+  * ### Implementation in C++ (which does not include standardization)
 
-```
+```c++
+#include <iostream>
+#include <RcppArmadillo.h>
 
+using namespace arma;
+using namespace std;
+using namespace Rcpp;
+
+// [[Rcpp::depends(RcppArmadillo)]]
+
+double CalcMSE(arma::mat oldY, arma::mat newY){
+  int n = oldY.n_rows;
+  int q = oldY.n_cols;
+  
+  double MSE=0.0;
+  for( int k=0; k<q; k++ ){
+    for( int i=0; i<n; i++ ){
+      MSE += arma::as_scalar( (oldY(i,k)-newY(i,k)) * 
+                                (oldY(i,k)-newY(i,k)) ) / n;
+    }  
+  }
+  
+  return MSE;
+}
+
+double L2Norm(arma::vec vector){
+  double square = arma::as_scalar(vector.t() * vector);
+  return sqrt(square);
+}
+
+double soft_thresholding(double value){
+  double out;
+  if( value >= 0 ){
+    out = value;
+  } else {
+    out = 0.0;
+  }
+  return out;
+}
+
+mat standardize(mat XX){
+  int N = XX.n_rows;
+  int p = XX.n_cols;
+  mat SDofX(p, 1);
+  
+  for( int jj=0; jj<p; jj++ ){
+    double meanX = 0.0;
+    double sqmeanX = 0.0;
+    for( int ii=0; ii<N; ii++ ){
+      meanX += XX(ii,jj)/N;
+      sqmeanX += pow(XX(ii,jj), 2)/N;
+    }
+    SDofX.row(jj) = sqrt( sqmeanX - pow(meanX,2) );
+    XX.col(jj) = ( XX.col(jj) - meanX ) / arma::as_scalar(SDofX.row(jj));
+  }
+  
+  return XX;
+}
+
+// [[Rcpp::export]]
+arma::mat mnet_png(mat X, mat Y, double lambda, double alpha, double tol){
+  
+  int n = X.n_rows;
+  int p = X.n_cols;
+  int q = Y.n_cols;
+  
+  // mat I = arma::eye<mat>(N, N);
+  // mat J(N, N);
+  // J.fill(1/N);
+  // X.insert_cols( 0, ones<vec>(N) );
+  
+  
+  mat B(p, q);
+  
+  // cout << "X = " << X << endl;
+  // cout << "Y = " << Y << endl;
+  
+  mat Lambda_diag(p, p);
+  Lambda_diag.fill(0);
+  for( int j=0; j<p; j++ ){
+    Lambda_diag(j,j) = .1;
+  }
+  
+  // cout << "Lamba_diag = " << Lambda_diag << endl;
+  
+  mat Yhat_old, Yhat_new(n, q);
+  // B = inv(X.t()*X + Lambda_diag) * X.t() * Y ;
+  B = inv(X.t()*X + Lambda_diag) * X.t() * Y ;
+  // arma::mat J = ones<vec>(n) * ones<vec>(n).t();
+  // arma::mat I; I.eye(n, n);
+  // B = Y * J/n) ;
+  
+  // cout << "B = " << B << endl;
+  
+  double convergence_value = tol + 1.0;
+  while( convergence_value > tol ){
+    
+    Yhat_old = X * B;
+    
+    
+    for( int k=0; k<p; k++ ){
+      
+      mat Xnew = X;
+      mat Bnew = B;
+      mat Xk = X.col(k);
+      
+      // cout << "Xk = " << Xk << endl;
+      Xnew.col(k).fill(0);
+      Bnew.row(k).fill(0);
+
+      arma::mat Bk_hat = ( Y - Xnew * Bnew );
+      
+      // cout << "Bk_hat = " << Bk_hat << endl;
+      double denom = arma::as_scalar(Xk.t() * Xk + n * lambda * (1.0-alpha) );
+      arma::mat nom = Xk.t() * Bk_hat * soft_thresholding(1-(n * lambda*alpha)/L2Norm((Xk.t() * Bk_hat).t()));
+      arma::mat Bk = nom / denom;
+      
+      // cout << "Bk = " << Bk << endl;
+      
+      B.row(k) = Bk;
+      
+      // cout << "B = " << B << endl;
+    }
+    
+    Yhat_new = X * B;
+    
+    convergence_value = CalcMSE(Yhat_old, Yhat_new);
+    
+  }
+  
+  cout << "The convergence value is = " <<
+    convergence_value << endl;
+  
+  // cout << "Beta = " << B << endl;
+  
+  return B;
+}
 ```
