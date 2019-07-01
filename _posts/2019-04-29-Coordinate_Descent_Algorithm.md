@@ -18,6 +18,11 @@ author: Kipoong Kim
 
 
 
+## 0.Standardization
+
+- https://statisticaloddsandends.wordpress.com/2018/11/15/a-deep-dive-into-glmnet-standardize/
+- scale variables with standard deviation of $\sqrt{n}$ instead of $\sqrt{n-1}$.
+
 ## 1. Linear regression
 
 - ###  Derivation
@@ -352,8 +357,8 @@ $$
   
   $$
   \begin{align*}
-  n \alpha \lambda &= \underset{l}{max} \lvert<x_\ell, y>\rvert \\
-  \lambda_{max} &= \underset{l}{max} \frac{1}{n \alpha} ({y - \bar{y}(1-\bar{y}))x_\ell }\\
+  n \alpha \lambda &= \underset{\ell}{max} \lvert<x_\ell, y>\rvert \\
+  \lambda_{max} &= \underset{\ell}{max} \frac{1}{n \alpha} ({y - \bar{y}(1-\bar{y}))x_\ell }\\
   \lambda_{min} &= \epsilon \lambda_{max}, ~~ \text{where $\epsilon=\begin{cases} 0.01 & \text{if $n>p$,} \\ 0.0001 & \text{if $n<p$}. \end{cases}$}
 \end{align*}
   $$
