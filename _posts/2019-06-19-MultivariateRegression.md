@@ -87,7 +87,7 @@ and A, B are both square and non-singular, then
 - If a $(J \times K)$-matrix $A$ is such that the $jk$th element $A_{jk}$ is itself a submatrix, then $A$ is termed a *block matrix*. 
   The *Kronecker product* of a $(J \times K)$-matrix $A$ and an $(L \times M)$-matrix B is the $(JL \times KM)$ block matrix
   $$
-  A \otimes B = (\bold{A}B_{jk}) = 
+  A \otimes B = (\boldsymbol{A}B_{jk}) = 
    \left( \begin{matrix} 
    \boldsymbol{A}B_{11} & \cdots & \boldsymbol{A}B_{1M} \\ 
    \vdots & & \vdots \\
@@ -158,54 +158,52 @@ $$
   
   $$
   AV = V\Lambda
-$$
-  where $\Lambda = \text{diag} ( \lambda_1, \lambda_2, \cdots, \lambda_J ) $ is a matrix with the eigenvalues along the diagonal and zeros elsewhere, and $V^T V = I_J$.
-  
+  $$
+where $\Lambda = \text{diag} ( \lambda_1, \lambda_2, \cdots, \lambda_J ) $ is a matrix with the eigenvalues along the diagonal and zeros elsewhere, and $V^T V = I_J$.
   
 - The “outer product” of a $J$-vector $\text{v}$ with itself is the $(J\times J)$-matrix $\text{v} \text{v}^T$, which has rank 1.
 
-  The *spectrum theorem* expresses the $(J\times J)$-matrix $A$ as a weighted average of rank-1 matrices, 
-$$
+  The *spectrum theorem* expresses the $(J\times J)$-matrix $A$ as a weighted average of rank-1 matrices,
+
+  $$
   A = V \Lambda V^T = \sum_{j=1}^J \lambda_j v_j v_j ^T,
-$$
+  $$
   
 
   where $I_J = \sum_{j=1} ^J v_j v_j ^T$, and where the weights, $\lambda_1, \cdots, \lambda_J$, are the eigenvalues of $A$.
   
-
 - The rank of $A$ is the number of nonzero eigenvalues, the trace is
-$$
+  $$
   \text{tr}(A) = \sum_{j=1}^J \lambda_j(A),
-$$
+  $$
   
   
   and the determinant is
-$$
+  $$
   \lvert A \rvert = \prod_{j=1} ^J \lambda_j(A)
-$$
+  $$
+
 ### Functions of Matrices
 
 - If $A$ is a symmetric $(J\times J)$-matrix and $\phi : R^J \rightarrow R^J$ is a function, then
-$$
+  $$
   \phi (A) = \sum_{j=1}^J \phi(\lambda_j)v_j v_j ^T,
-$$
-  
-
-  where $\lambda_j$ and $v_j$ are the $j$th eigenvalue and corresponding eigenvector, respectively, of $A$.
+  $$
+where $\lambda_j$ and $v_j$ are the $j$th eigenvalue and corresponding eigenvector, respectively, of $A$.
   
   
   
 - Examples include the following:
-$$
+  $$
   \begin{align}
   A^{-1} & = V \Lambda ^{-1} V^T = \sum_{j=1}^J \lambda_j ^{-1} v_j v_j ^T, \text{ if $A$ is nonsingular} \\
   A^{1/2} & = V \Lambda ^{1/2} V^T = \sum_{j=1}^J \lambda_j ^{1/2} v_j v_j ^T \\
   \text{log}(A) & = \sum_{j=1}^J (\text{log}(\lambda_j)) v_j v_j ^T, \text{ if $\lambda_j \ne 0,$ all $j$} \\
   \end{align}
-$$
+  $$
   
   
-  Hence, $\lambda_j (\phi (A)) = \phi ( \lambda_j (A) )$ and $\v_j (\phi (A)) = v_j (A)$. 
+  Hence, $\lambda_j (\phi (A)) = \phi ( \lambda_j (A) )$ and $v_j (\phi (A)) = v_j (A)$. 
 
 
 
@@ -214,24 +212,23 @@ $$
 ## 2. Multivariate regression
 
 - Consider the multivariate regression framework:
-$$
+  $$
   \begin{align*}
   Y = XB + W,
   \end{align*}
-$$
+  $$
   where $Y$ is an $n \times q$ matrix of responses, $X$ is an $n \times p$ design matrix, $B$ is a $p \times q$ regression coefficients matrix to be estimated, and $W$ is an matrix of errors.
 
-  
 - Least squares figure out the regression coefficients that minimize the following objective function:
-$$
+  $$
   \parallel Y-XB \parallel_F^2,
-$$
+  $$
   $\parallel \cdot \parallel_F$ is the Frobenius norm. 
 
   
   
 - Let us assume that the responses are correlated with each other. Then, since the above objective function do not include the correlation among responses, we will use the Mahalanobis distance instead of Eucleadian distance of Frobenius norm.
-$$
+  $$
   tr \left\{ (Y-XB)\Sigma^{-1} (Y-XB)^T ) \right\}
   $$
 
