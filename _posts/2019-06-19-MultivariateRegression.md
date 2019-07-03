@@ -89,9 +89,9 @@ and A, B are both square and non-singular, then
   $$
   A \otimes B = (\bold{A}B_{jk}) = 
    \left( \begin{matrix} 
-   \bold{A}B_{11} & \cdots & \bold{A}B_{1M} \\ 
+   \boldsymbol{A}B_{11} & \cdots & \boldsymbol{A}B_{1M} \\ 
    \vdots & & \vdots \\
-   \bold{A}B_{L1} & \cdots & \bold{A}B_{LM} \\
+   \boldsymbol{A}B_{L1} & \cdots & \boldsymbol{A}B_{LM} \\
    \end{matrix} \right).
   $$
 
