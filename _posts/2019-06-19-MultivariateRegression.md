@@ -28,7 +28,6 @@ author: Kipoong Kim
   - Cholesky decomposition: $A = LL^T$
   - QR decomposition: $A = QR$
   
-  
 - If $A$ and $B$ are $(J \times J)$ matrices, then
   $$
   \lvert AB \rvert = \lvert A \rvert \lvert B \rvert
@@ -36,13 +35,16 @@ author: Kipoong Kim
   
 - $ \lvert Q \rvert = 1 $
   
-  
-- If $ \Sigma = \left( \begin{matrix} A & B \\ C & D \\ 
-  \end{matrix} \right) $ and A, B are both square and non-singular, then
+- If 
+  $$
+  \Sigma = \left( \begin{matrix} A & B \\ C & D \\ 
+  \end{matrix} \right)
+  $$
+and A, B are both square and non-singular, then
   $$
   \lvert \Sigma \rvert = \lvert A \rvert \cdot \lvert D-CA^{-1}B \rvert = \lvert A \rvert \cdot \lvert A-BD^{-1}C \rvert
   $$
-
+  
 - The rank of $A$, denoted $r(A)$, is the size of the largest submatrix of $A$ that has a nonzero determinant.
 
   Note that $r(AB) = r(A)$ if $\lvert B \rvert \ne 0$, and, in general, $r(AB) \le \text{min} \left( r(A), r(B) \right) $.
@@ -65,7 +67,6 @@ author: Kipoong Kim
 (A+\boldsymbol{uv}^T)^{-1} = A^{-1} - \frac{(A^{-1}\boldsymbol{u})(\boldsymbol{v}^TA^{-1})}{1+\boldsymbol{v}^TA^{-1}\boldsymbol{u}}.
   $$
   
-  
 - If $A$ and $D$ are symmetric matrices and $A$ is nonsingular, then,
   $$
   \left( \begin{matrix}
@@ -83,7 +84,6 @@ author: Kipoong Kim
 
 - vec(**A**) denotes the $(JK \times 1)$-column vector formed <u>by placing the columns of a $(J\times K)$-matrix A under one another successively</u>.
   
-
 - If a $(J \times K)$-matrix $A$ is such that the $jk$th element $A_{jk}$ is itself a submatrix, then $A$ is termed a *block matrix*. 
   The *Kronecker product* of a $(J \times K)$-matrix $A$ and an $(L \times M)$-matrix B is the $(JL \times KM)$ block matrix
   $$
@@ -97,7 +97,6 @@ author: Kipoong Kim
 
   
   This is commonly known as the *left Kronecker product*.
-  
   
 - The following operation hold for *Kronecker products*:
   
@@ -145,14 +144,15 @@ author: Kipoong Kim
   
   The root $\lambda_j$ is called the *eigenvalue (characteristic root, latent root)* of $A$, and the set $\{\lambda_j \}$ is called the *spectrum* of $A$. 
   
+
 Associated with $\lambda_j$, there is a $J$-vector $v_j=v_j(A)$ (not all of whose entries of zero) such that
-  
-  $$
+
+$$
   (A - \lambda_j I_J) \text{v}_j = 0.
-  $$
-  
+$$
+
   The vector $\text{v}_j$ is called *eigenvector (characteristic vector, latent vector)* associated with $\lambda_j$. 
-  
+
 - Eigenvectors $\text{v}_j$ and $\text{v}_k$ associated with distinct eigenvalues $(\lambda_j \ne \lambda_k)$ are orthogonal. 
   If $V = (v_1, v_2, \cdots, v_J)$, then
   
@@ -165,31 +165,30 @@ $$
 - The “outer product” of a $J$-vector $\text{v}$ with itself is the $(J\times J)$-matrix $\text{v} \text{v}^T$, which has rank 1.
 
   The *spectrum theorem* expresses the $(J\times J)$-matrix $A$ as a weighted average of rank-1 matrices, 
-  $$
+$$
   A = V \Lambda V^T = \sum_{j=1}^J \lambda_j v_j v_j ^T,
-  $$
+$$
   
 
   where $I_J = \sum_{j=1} ^J v_j v_j ^T$, and where the weights, $\lambda_1, \cdots, \lambda_J$, are the eigenvalues of $A$.
   
 
 - The rank of $A$ is the number of nonzero eigenvalues, the trace is
-  $$
+$$
   \text{tr}(A) = \sum_{j=1}^J \lambda_j(A),
-  $$
+$$
   
   
   and the determinant is
-  $$
+$$
   \lvert A \rvert = \prod_{j=1} ^J \lambda_j(A)
-  $$
-
+$$
 ### Functions of Matrices
 
 - If $A$ is a symmetric $(J\times J)$-matrix and $\phi : R^J \rightarrow R^J$ is a function, then
-  $$
+$$
   \phi (A) = \sum_{j=1}^J \phi(\lambda_j)v_j v_j ^T,
-  $$
+$$
   
 
   where $\lambda_j$ and $v_j$ are the $j$th eigenvalue and corresponding eigenvector, respectively, of $A$.
@@ -197,13 +196,13 @@ $$
   
   
 - Examples include the following:
-  $$
+$$
   \begin{align}
   A^{-1} & = V \Lambda ^{-1} V^T = \sum_{j=1}^J \lambda_j ^{-1} v_j v_j ^T, \text{ if $A$ is nonsingular} \\
   A^{1/2} & = V \Lambda ^{1/2} V^T = \sum_{j=1}^J \lambda_j ^{1/2} v_j v_j ^T \\
   \text{log}(A) & = \sum_{j=1}^J (\text{log}(\lambda_j)) v_j v_j ^T, \text{ if $\lambda_j \ne 0,$ all $j$} \\
   \end{align}
-  $$
+$$
   
   
   Hence, $\lambda_j (\phi (A)) = \phi ( \lambda_j (A) )$ and $\v_j (\phi (A)) = v_j (A)$. 
@@ -215,26 +214,26 @@ $$
 ## 2. Multivariate regression
 
 - Consider the multivariate regression framework:
-  $$
+$$
   \begin{align*}
   Y = XB + W,
   \end{align*}
-  $$
+$$
   where $Y$ is an $n \times q$ matrix of responses, $X$ is an $n \times p$ design matrix, $B$ is a $p \times q$ regression coefficients matrix to be estimated, and $W$ is an matrix of errors.
 
   
 - Least squares figure out the regression coefficients that minimize the following objective function:
-  $$
+$$
   \parallel Y-XB \parallel_F^2,
-  $$
+$$
   $\parallel \cdot \parallel_F$ is the Frobenius norm. 
 
   
   
 - Let us assume that the responses are correlated with each other. Then, since the above objective function do not include the correlation among responses, we will use the Mahalanobis distance instead of Eucleadian distance of Frobenius norm.
-  $$
+$$
   tr \left\{ (Y-XB)\Sigma^{-1} (Y-XB)^T ) \right\}
   $$
-  
+
 - 
 
