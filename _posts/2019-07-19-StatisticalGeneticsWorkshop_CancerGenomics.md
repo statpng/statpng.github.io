@@ -1,10 +1,10 @@
 ---
 layout: post
-title:  "Topic :: Multivariate regression"
+title:  "Workshop :: Cancer genomics"
 date:   2019-06-19
-categories: statistics topic
-permalink: statistics
-tags: statistics
+categories: cancer
+permalink: bioinformatics
+tags: cancer
 use_math: true
 
 # author

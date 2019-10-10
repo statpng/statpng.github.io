@@ -1,10 +1,10 @@
 ---
 layout: post
-title:  "Topic :: Multivariate regression"
+title:  "Workshop :: scRNA"
 date:   2019-06-19
-categories: statistics topic
-permalink: statistics
-tags: statistics
+categories: RNA
+permalink: bioinformatics
+tags: RNA
 use_math: true
 
 # author
@@ -43,7 +43,7 @@ author: Kipoong Kim
 
 
 
-![scRNA_1](E:\6.Github\statpng\statpng.github.io[sciblog]\img\scRNA_1.png)
+![scRNA_1](D:\6.Github\statpng\statpng.github.io[sciblog]\img\scRNA_1.png)
   : Bulk sequencing뿐만 아니라 cell-type에 따른 시퀀싱 분석이 필요하다.
 
 - Computational deconvolution techniques: bulk seqeuncing data를 가지고 cell-type을 추정함.
@@ -55,7 +55,7 @@ author: Kipoong Kim
 
 - 
 
-![scRNA_2](E:\6.Github\statpng\statpng.github.io[sciblog]\img\scRNA_2.png)
+![scRNA_2](D:\6.Github\statpng\statpng.github.io[sciblog]\img\scRNA_2.png)
 
 - library 생산을 빨리 해야 cell이 죽지않고 cell profile이 바뀌지 않는다.
 
@@ -67,7 +67,7 @@ author: Kipoong Kim
 
 - 분석방법 비교
 
-![scRNA_3](E:\6.Github\statpng\statpng.github.io[sciblog]\img\scRNA_3.png)
+![scRNA_3](D:\6.Github\statpng\statpng.github.io[sciblog]\img\scRNA_3.png)
 
 - Deconvolution 단점: (1) 추정된 ratio가 정확하지 않다. (2) Library에 포함되지 않은 cell-type의 경우 misesd cells로서 분류됨.
 - 
